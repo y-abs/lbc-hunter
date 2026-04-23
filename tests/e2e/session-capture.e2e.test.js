@@ -7,6 +7,7 @@
 
 import { test, expect } from "@playwright/test";
 import { launchWithExtension, swEval } from "./helpers/launch-extension.js";
+import { E2E_WEB_ORIGIN } from "./helpers/domains.js";
 
 const _FIXTURE_KEY = "e2e-fixture-api-key-0123456789abcdef0123456789abcdef";
 
@@ -28,7 +29,7 @@ test("content script extracts api_key from __NEXT_DATA__ and SW persists it", as
 
   // Open a fake LBC page (route intercept serves our fixture).
   const page = await env.context.newPage();
-  await page.goto("https://www.lbc.fr/");
+  await page.goto(`${E2E_WEB_ORIGIN}/`);
 
   // Wait for the SESSION_CAPTURED flow to complete. Polls the SW's IDB
   // until the session row appears (or ~3s timeout).
@@ -68,7 +69,7 @@ test("content script extracts api_key from __NEXT_DATA__ and SW persists it", as
 
 test("content script injects on /annonce/ pages (ad-page target)", async () => {
   const page = await env.context.newPage();
-  await page.goto("https://www.lbc.fr/annonce/123456/nintendo");
+  await page.goto(`${E2E_WEB_ORIGIN}/annonce/123456/nintendo`);
   await page.waitForTimeout(300);
 
   // Ad-page DOM is present (our fixture includes the contact textarea).

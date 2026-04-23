@@ -240,15 +240,18 @@ describe("checkSessionHealth", () => {
       refresh_count: 0,
       last_refresh_at: staleTime,
     });
-    seedLbcTab(); // ensure an LBC tab exists so autoRefreshSession sends message
+    // Make this deterministic: force one matching LBC tab so auto-refresh
+    // takes the sendMessage path instead of relying on shared tab mock state.
+    const querySpy = vi.spyOn(chrome.tabs, "query").mockResolvedValue([
+      { id: 42, url: "https://www.leboncoin.fr/", status: "complete", active: true },
+    ]);
     const createSpy = vi.spyOn(chrome.tabs, "create");
     const msgSpy = vi.spyOn(chrome.tabs, "sendMessage").mockResolvedValue({});
     fireAlarm("session-check");
     await flush();
-    // Either a background tab was opened OR a REFRESH_SESSION message was sent
-    const autoRefreshTriggered =
-      createSpy.mock.calls.some((c) => /lbc\.fr/.test(c[0]?.url)) || msgSpy.mock.calls.length > 0;
-    expect(autoRefreshTriggered).toBe(true);
+    expect(querySpy).toHaveBeenCalled();
+    expect(msgSpy.mock.calls.length > 0).toBe(true);
+    expect(createSpy.mock.calls.some((c) => /lbc\.fr/.test(c[0]?.url))).toBe(false);
   });
 });
 

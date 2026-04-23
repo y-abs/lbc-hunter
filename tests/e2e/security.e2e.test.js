@@ -4,6 +4,7 @@
 
 import { test, expect } from "@playwright/test";
 import { launchWithExtension, openExtensionPage, swEval } from "./helpers/launch-extension.js";
+import { E2E_API_ORIGIN, E2E_WEB_ORIGIN } from "./helpers/domains.js";
 
 const FIXTURE_KEY = "e2e-fixture-api-key-0123456789abcdef0123456789abcdef";
 const FORGED_KEY = "forged-attacker-key-abcdefghijklmnopqrstuvwxyz123456";
@@ -60,13 +61,13 @@ test("rejects malformed runtime envelopes and increments blocked_message_envelop
   expect(status.securityCounters?.blocked_message_envelope || 0).toBeGreaterThan(0);
 });
 
-test("blocks hostile EXECUTE_FETCH target outside api.lbc.fr and tracks blocked_proxy_request", async () => {
+test("blocks hostile EXECUTE_FETCH target outside api.leboncoin.fr and tracks blocked_proxy_request", async () => {
   const lbcPage = await env.context.newPage();
-  await lbcPage.goto("https://www.lbc.fr/");
+  await lbcPage.goto(`${E2E_WEB_ORIGIN}/`);
 
   await lbcPage.waitForTimeout(200);
-  const response = await swEval(env.serviceWorker, async () => {
-    const tabs = await chrome.tabs.query({ url: ["https://www.lbc.fr/*"] });
+  const response = await swEval(env.serviceWorker, async (webOrigin) => {
+    const tabs = await chrome.tabs.query({ url: [`${webOrigin}/*`] });
     const tab = tabs[0];
     if (!tab?.id) return { ok: false, error: "no_lbc_tab" };
     return chrome.tabs.sendMessage(tab.id, {
@@ -78,7 +79,7 @@ test("blocks hostile EXECUTE_FETCH target outside api.lbc.fr and tracks blocked_
         body: JSON.stringify({ attacker: true }),
       },
     });
-  });
+  }, E2E_WEB_ORIGIN);
 
   expect(response.ok).toBe(false);
   expect(response.error).toBe("blocked_non_lbc_url");
@@ -92,7 +93,7 @@ test("blocks hostile EXECUTE_FETCH target outside api.lbc.fr and tracks blocked_
 
 test("ignores forged page-world capture messages that spoof api host substrings", async () => {
   const lbcPage = await env.context.newPage();
-  await lbcPage.goto("https://www.lbc.fr/");
+  await lbcPage.goto(`${E2E_WEB_ORIGIN}/`);
 
   for (let i = 0; i < 30; i++) {
     await lbcPage.waitForTimeout(100);
@@ -100,16 +101,22 @@ test("ignores forged page-world capture messages that spoof api host substrings"
     if (key) break;
   }
 
-  await lbcPage.evaluate((forged) => {
-    window.postMessage(
-      {
-        type: "__LBCH_CAPTURED__",
-        url: "https://evil.example/?hint=api.lbc.fr",
-        headers: { api_key: forged },
-      },
-      location.origin,
-    );
-  }, FORGED_KEY);
+  await lbcPage.evaluate(
+    ({ forged, apiOrigin }) => {
+      const apiHost = new URL(apiOrigin).host;
+      const origin = window.location.origin;
+      const spoofed = `https://evil.example/?hint=${apiHost}`;
+      window.postMessage(
+        {
+          type: "__LBCH_CAPTURED__",
+          url: spoofed,
+          headers: { api_key: forged },
+        },
+        origin,
+      );
+    },
+    { forged: FORGED_KEY, apiOrigin: E2E_API_ORIGIN },
+  );
 
   await lbcPage.waitForTimeout(200);
   const apiKey = await readSessionKey();

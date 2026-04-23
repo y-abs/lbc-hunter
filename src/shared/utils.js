@@ -141,25 +141,25 @@ export function clamp(val, min, max) {
  * Build a lbc ad URL from a list_id.
  */
 export function adUrl(listId) {
-  return `https://www.lbc.fr/ad/collection/${listId}`;
+  return `https://www.leboncoin.fr/ad/collection/${listId}`;
 }
 
 /**
- * Return `candidate` if it is a well-formed lbc.fr https URL,
+ * Return `candidate` if it is a well-formed leboncoin.fr https URL,
  * otherwise fall back to an API-built URL for `listId`.
  *
  * Defense-in-depth: `ad.url` is emitted by the LBC API, i.e. flows
  * through attacker-controllable ad records. Anywhere we feed that value
  * into `chrome.tabs.create({url})` or `window.location.href = url` a
  * malformed scheme (`javascript:`, `data:`, `blob:`) would hijack the
- * lbc.fr origin — stealing session cookies, auto-sending
+ * leboncoin.fr origin — stealing session cookies, auto-sending
  * messages, exfiltrating the logged-in user's profile data. This gate
  * must run at every such sink, not only at render time.
  */
 export function lbcAdUrl(candidate, listId) {
   if (typeof candidate === "string") {
     try {
-      const u = new URL(candidate, "https://www.lbc.fr/");
+      const u = new URL(candidate, "https://www.leboncoin.fr/");
       if (u.protocol === "https:" && /(^|\.)lbc\.fr$/i.test(u.hostname)) {
         return u.href;
       }
@@ -223,7 +223,7 @@ export function error(...args) {
  * `\t` (tab) or `\r` is interpreted as a formula and executed — this
  * includes `=HYPERLINK(...)`, `=cmd|...`, and `=IMPORTDATA(...)` which
  * can exfiltrate the spreadsheet to a remote URL. Ad titles and seller
- * names flow end-to-end from lbc.fr (attacker-controllable) into
+ * names flow end-to-end from leboncoin.fr (attacker-controllable) into
  * our CSV, so every cell must be neutralised.
  *
  * Strategy: prefix a leading `'` to dangerous values so the spreadsheet

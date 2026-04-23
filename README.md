@@ -47,7 +47,7 @@ npm run build
 
 ## Première configuration 🚀
 
-1. Ouvrir https://www.lbc.fr et vous connecter.
+1. Ouvrir https://www.leboncoin.fr et vous connecter.
 2. Lancer une recherche pour initialiser la capture de session.
 3. Ouvrir les Options et créer votre première watchlist.
 

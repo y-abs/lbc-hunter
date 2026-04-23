@@ -49,7 +49,7 @@ describe("notifier.js - fireAlert shipping display", () => {
     id: "123",
     title: "Test Ad",
     price: 120,
-    url: "https://www.lbc.fr/ad/collection/123",
+    url: "https://www.leboncoin.fr/ad/collection/123",
     images: ["image.jpg"],
   };
 
@@ -117,7 +117,7 @@ describe("notifier.js - playAlertSound preferences", () => {
     });
   });
 
-  const ad = { id: "123", title: "Test Ad", price: 120, url: "https://www.lbc.fr/ad/collection/123" };
+  const ad = { id: "123", title: "Test Ad", price: 120, url: "https://www.leboncoin.fr/ad/collection/123" };
   const watchlist = { id: 1, name: "Test Watchlist", purchase_mode: "off" };
   const redMatch = { is_match: true, alert_tier: "red" };
   const orangeMatch = { is_match: true, alert_tier: "orange" };

@@ -238,7 +238,7 @@ async function autoRefreshSession() {
     return;
   }
 
-  const lbcTabs = await chrome.tabs.query({ url: "*://www.lbc.fr/*", status: "complete" });
+  const lbcTabs = await chrome.tabs.query({ url: "*://www.leboncoin.fr/*", status: "complete" });
   if (lbcTabs.length) {
     try {
       await chrome.tabs.sendMessage(lbcTabs[0].id, { type: MSG.REFRESH_SESSION });
@@ -259,7 +259,7 @@ async function autoRefreshSession() {
     return;
   }
   try {
-    const tab = await chrome.tabs.create({ url: "https://www.lbc.fr/", active: false });
+    const tab = await chrome.tabs.create({ url: "https://www.leboncoin.fr/", active: false });
     pendingRefreshTabId = tab.id;
     await chrome.storage.session.set({ pending_refresh_tab: tab.id });
     log("Background LBC tab opened for session refresh — tabId:", tab.id);
@@ -483,7 +483,7 @@ async function handleMessage(msg, sender) {
         telemetry = {};
       }
       const sessionStale = session ? Date.now() - session.captured_at > SESSION_TTL_MS : true;
-      const tabs = await chrome.tabs.query({ url: "*://www.lbc.fr/*" });
+      const tabs = await chrome.tabs.query({ url: "*://www.leboncoin.fr/*" });
       const watchlists = await getWatchlists();
       const failingCount = watchlists.filter((w) => w.enabled && (w.consecutive_poll_failures ?? 0) >= 5).length;
       return {

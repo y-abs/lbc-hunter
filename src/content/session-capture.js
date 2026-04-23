@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────
 //  LbC Hunter — Session Capture
-//  Runs on every lbc.fr page.
+//  Runs on every leboncoin.fr page.
 //  Goals: capture api_key, proxy API fetches for SW.
 // ─────────────────────────────────────────────
 
@@ -63,7 +63,7 @@ function isAllowedProxyRequest(url, options) {
   } catch (_) {
     return false;
   }
-  if (parsed.protocol !== "https:" || parsed.hostname !== "api.lbc.fr") return false;
+  if (parsed.protocol !== "https:" || parsed.hostname !== "api.leboncoin.fr") return false;
   if (parsed.pathname !== "/finder/search") return false;
 
   const opts = isPlainObject(options) ? options : {};
@@ -157,7 +157,7 @@ function listenForPageMessage() {
     if (e.source !== window) return;
     if (e.data?.type !== "__LBCH_CAPTURED__") return;
 
-    // SECURITY: validate the claimed fetch URL is actually api.lbc.fr.
+    // SECURITY: validate the claimed fetch URL is actually api.leboncoin.fr.
     // Any same-window script (LBC's own code, third-party ads/analytics, a
     // browser extension injecting into MAIN world) can postMessage this shape
     // and otherwise overwrite the stored api_key with attacker-controlled
@@ -171,7 +171,7 @@ function listenForPageMessage() {
     let isLbcApi = false;
     try {
       const u = new URL(claimedUrl, location.origin);
-      isLbcApi = u.protocol === "https:" && u.hostname === "api.lbc.fr";
+      isLbcApi = u.protocol === "https:" && u.hostname === "api.leboncoin.fr";
     } catch (_) {
       isLbcApi = false;
     }
@@ -195,7 +195,7 @@ function listenForPageMessage() {
 }
 
 // ── Strategy 4: active probe ──────────────────────────────────────────────────
-// Makes a real authenticated fetch to api.lbc.fr using browser cookies.
+// Makes a real authenticated fetch to api.leboncoin.fr using browser cookies.
 // Works on a completely idle tab (no page API call needed).
 // Reliable on long-overnight sessions where localStorage capture is stale.
 
@@ -207,7 +207,7 @@ function probeAndRenewSession() {
   const headers = { "Content-Type": "application/json" };
   if (freshKey) headers["api_key"] = freshKey;
 
-  fetch("https://api.lbc.fr/finder/search", {
+  fetch("https://api.leboncoin.fr/finder/search", {
     method: "POST",
     credentials: "include", // browser cookies carry the real auth — works even without api_key
     headers,
@@ -266,7 +266,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   }
 
   if (msg.type === MSG.EXECUTE_FETCH) {
-    // SECURITY (defense-in-depth): only proxy fetches to api.lbc.fr.
+    // SECURITY (defense-in-depth): only proxy fetches to api.leboncoin.fr.
     // The SW should never target anything else — enforcing this here blocks
     // an entire class of attacks where a future SW bug (or compromised
     // chrome.storage import) could abuse the content-script's cookie-bearing

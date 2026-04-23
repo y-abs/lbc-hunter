@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────
 //  LbC Hunter — Alerts Sidebar
 //  Floating collapsible panel injected on all
-//  lbc.fr pages.  Shows the 20 most recent
+//  leboncoin.fr pages.  Shows the 20 most recent
 //  alerts straight from IndexedDB.
 // ─────────────────────────────────────────────
 

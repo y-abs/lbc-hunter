@@ -20,37 +20,44 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://www.lbc.fr/*"],
+      "matches": ["*://www.leboncoin.fr/*", "*://www.leboncoin.fr/*"],
       "js": ["content/page-interceptor.js"],
       "run_at": "document_start",
       "world": "MAIN"
     },
     {
-      "matches": ["*://www.lbc.fr/*"],
+      "matches": ["*://www.leboncoin.fr/*", "*://www.leboncoin.fr/*"],
       "js": ["content/session-capture.js"],
       "run_at": "document_idle"
     },
     {
-      "matches": ["*://www.lbc.fr/recherche*"],
+      "matches": ["*://www.leboncoin.fr/recherche*", "*://www.leboncoin.fr/recherche*"],
       "js": ["content/inject-badges.js"],
       "run_at": "document_idle",
       "css": []
     },
     {
-      "matches": ["*://www.lbc.fr/annonce/*", "*://www.lbc.fr/ad/collection/*"],
+      "matches": [
+        "*://www.leboncoin.fr/annonce/*",
+        "*://www.leboncoin.fr/ad/collection/*",
+        "*://www.leboncoin.fr/annonce/*",
+        "*://www.leboncoin.fr/ad/collection/*"
+      ],
       "js": ["content/inject-adpage.js"],
       "run_at": "document_idle"
     },
     {
-      "matches": ["*://www.lbc.fr/*"],
+      "matches": ["*://www.leboncoin.fr/*", "*://www.leboncoin.fr/*"],
       "js": ["content/inject-sidebar.js"],
       "run_at": "document_idle"
     }
   ],
   "permissions": ["alarms", "notifications", "storage", "tabs", "scripting", "activeTab", "offscreen"],
   "host_permissions": [
-    "https://www.lbc.fr/*",
-    "https://api.lbc.fr/*",
+    "https://www.leboncoin.fr/*",
+    "https://www.leboncoin.fr/*",
+    "https://api.leboncoin.fr/*",
+    "https://api.leboncoin.fr/*",
     "https://ntfy.sh/*",
     "https://api.emailjs.com/*"
   ],
@@ -64,7 +71,7 @@
   "web_accessible_resources": [
     {
       "resources": ["assets/sounds/*.mp3", "src/dashboard/dashboard.html", "offscreen/offscreen.html"],
-      "matches": ["*://www.lbc.fr/*", "chrome-extension://*/*"]
+      "matches": ["*://www.leboncoin.fr/*", "*://www.leboncoin.fr/*", "chrome-extension://*/*"]
     }
   ]
 }

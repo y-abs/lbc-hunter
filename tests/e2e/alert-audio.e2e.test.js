@@ -2,6 +2,7 @@
 
 import { test, expect } from "@playwright/test";
 import { launchWithExtension, swEval, openExtensionPage, resetStores } from "./helpers/launch-extension.js";
+import { E2E_API_SEARCH_MATCH, E2E_WEB_ORIGIN } from "./helpers/domains.js";
 
 test.describe.configure({ mode: "serial" });
 
@@ -28,7 +29,7 @@ function mkAd(id, { price = 99 } = {}) {
 test.beforeAll(async () => {
   env = await launchWithExtension({
     routes: {
-      "api.lbc.fr/finder/search": async (route) =>
+      [E2E_API_SEARCH_MATCH]: async (route) =>
         route.fulfill({
           status: 200,
           contentType: "application/json",
@@ -38,7 +39,7 @@ test.beforeAll(async () => {
   });
 
   const lbc = await env.context.newPage();
-  await lbc.goto("https://www.lbc.fr/");
+  await lbc.goto(`${E2E_WEB_ORIGIN}/`);
   for (let i = 0; i < 30; i++) {
     await lbc.waitForTimeout(100);
     const ok = await swEval(

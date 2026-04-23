@@ -55,7 +55,7 @@ export const SELLER_TYPES = {
 
 export const POLL_INTERVALS = [30, 60, 120, 300, 900]; // seconds
 
-export const API_ENDPOINT = "https://api.lbc.fr/finder/search";
+export const API_ENDPOINT = "https://api.leboncoin.fr/finder/search";
 
 export const MAX_MESSAGES_PER_HOUR = 15;
 export const MAX_MESSAGES_PER_DAY = 50;

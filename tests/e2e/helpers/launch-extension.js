@@ -1,12 +1,13 @@
 // Playwright E2E harness — loads the BUILT extension (dist/) into a real
-// Chromium instance with a persistent context. All api.lbc.fr traffic
-// is intercepted and served by the fixture server — zero real LBC hits.
+// Chromium instance with a persistent context. API/web traffic for configured
+// domains is intercepted and served by fixtures — zero real site hits.
 
 import { chromium } from "@playwright/test";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import fs from "node:fs";
 import os from "node:os";
+import { E2E_API_ROUTE_GLOBS, E2E_WEB_ROUTE_GLOBS } from "./domains.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -41,38 +42,42 @@ export async function launchWithExtension({ routes = {} } = {}) {
   }
   const extensionId = serviceWorker.url().split("/")[2];
 
-  // Route ALL api.lbc.fr traffic. Default = 200 empty ads.
-  await context.route("**://api.lbc.fr/**", async (route) => {
-    const url = route.request().url();
-    const handler = Object.entries(routes).find(([pattern]) => url.includes(pattern));
-    if (handler) return handler[1](route);
-    return route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({ ads: [], total: 0 }),
-    });
-  });
-
-  // Route www.lbc.fr HTML pages to local fixtures so content scripts
-  // inject against realistic markup without touching the real site.
-  const FIX = path.join(__dirname, "..", "fixtures");
-  await context.route("**://www.lbc.fr/**", async (route) => {
-    const url = new URL(route.request().url());
-    let file;
-    if (url.pathname.startsWith("/annonce/") || url.pathname.startsWith("/ad/")) {
-      file = path.join(FIX, "lbc-ad.html");
-    } else {
-      file = path.join(FIX, "lbc-home.html");
-    }
-    if (fs.existsSync(file)) {
+  // Route all configured API domains. Default response = 200 empty ads.
+  for (const glob of E2E_API_ROUTE_GLOBS) {
+    await context.route(glob, async (route) => {
+      const url = route.request().url();
+      const handler = Object.entries(routes).find(([pattern]) => url.includes(pattern));
+      if (handler) return handler[1](route);
       return route.fulfill({
         status: 200,
-        contentType: "text/html; charset=utf-8",
-        body: fs.readFileSync(file, "utf8"),
+        contentType: "application/json",
+        body: JSON.stringify({ ads: [], total: 0 }),
       });
-    }
-    return route.fulfill({ status: 404, body: "" });
-  });
+    });
+  }
+
+  // Route configured web domains to local fixtures so content scripts
+  // inject against realistic markup without touching the real site.
+  const FIX = path.join(__dirname, "..", "fixtures");
+  for (const glob of E2E_WEB_ROUTE_GLOBS) {
+    await context.route(glob, async (route) => {
+      const url = new URL(route.request().url());
+      let file;
+      if (url.pathname.startsWith("/annonce/") || url.pathname.startsWith("/ad/")) {
+        file = path.join(FIX, "lbc-ad.html");
+      } else {
+        file = path.join(FIX, "lbc-home.html");
+      }
+      if (fs.existsSync(file)) {
+        return route.fulfill({
+          status: 200,
+          contentType: "text/html; charset=utf-8",
+          body: fs.readFileSync(file, "utf8"),
+        });
+      }
+      return route.fulfill({ status: 404, body: "" });
+    });
+  }
 
   const cleanup = async () => {
     await context.close().catch(() => {});

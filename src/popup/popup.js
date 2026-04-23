@@ -296,9 +296,9 @@ function buildWatchlistRow(wl) {
   const btnText = ps === "polling" ? "⏳" : ps === "done" ? "✓" : ps === "no_tab" || ps === "no_session" ? "⚠" : "▶";
   const btnTitle =
     ps === "no_tab"
-      ? "Aucun onglet lbc.fr ouvert"
+      ? "Aucun onglet leboncoin.fr ouvert"
       : ps === "no_session"
-        ? "Session expirée — visitez lbc.fr"
+        ? "Session expirée — visitez leboncoin.fr"
         : ps === "done"
           ? "Polling terminé"
           : "Forcer le polling";

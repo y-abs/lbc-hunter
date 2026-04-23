@@ -124,7 +124,7 @@ async function _getPollTabId() {
   }
 
   // Step 1 & 2: query complete, non-discarded LBC tabs and ping them
-  const allLbc = await chrome.tabs.query({ url: "*://www.lbc.fr/*", status: "complete" });
+  const allLbc = await chrome.tabs.query({ url: "*://www.leboncoin.fr/*", status: "complete" });
   const candidates = allLbc.filter((t) => !t.discarded); // discarded = cannot receive messages
 
   // Sort: active tab first (never frozen), then most-recently-accessed
@@ -193,7 +193,7 @@ async function _getPollTabId() {
     // anchor. Each call is an active Chrome Extension API invocation, so the
     // SW stays alive on every iteration regardless of how long the page takes
     // to load. Bounded by 15 s (30 iterations × 500 ms).
-    const tab = await chrome.tabs.create({ url: "https://www.lbc.fr/", active: false });
+    const tab = await chrome.tabs.create({ url: "https://www.leboncoin.fr/", active: false });
     _proxyTabId = tab.id;
     await chrome.storage.session.set({ [PROXY_TAB_SESSION_KEY]: tab.id });
     try {
@@ -520,7 +520,7 @@ async function _doPollWatchlist(watchlistParam) {
       _broadcastBackfillError(
         watchlistParam.id,
         "no_session",
-        `Historique en attente (${watchlistParam.pending_backfill_days}j): session LBC manquante — visitez lbc.fr pour vous connecter`,
+        `Historique en attente (${watchlistParam.pending_backfill_days}j): session LBC manquante — visitez leboncoin.fr pour vous connecter`,
         { days: watchlistParam.pending_backfill_days },
       );
     }
@@ -599,7 +599,7 @@ async function _doPollWatchlist(watchlistParam) {
         _broadcastBackfillError(
           watchlist.id,
           "no_tab",
-          `Historique en attente (${watchlist.pending_backfill_days}j): aucun onglet lbc.fr ouvert — ouvrir un onglet LBC pour débloquer`,
+          `Historique en attente (${watchlist.pending_backfill_days}j): aucun onglet leboncoin.fr ouvert — ouvrir un onglet LBC pour débloquer`,
           { days: watchlist.pending_backfill_days },
         );
       }

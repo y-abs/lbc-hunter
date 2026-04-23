@@ -32,7 +32,7 @@ function createLocalStorage(initial = {}) {
 
 function installDomGlobals(initialCapture) {
   const listeners = new Map();
-  const location = new URL("https://www.lbc.fr/");
+  const location = new URL("https://www.leboncoin.fr/");
 
   const localStorage = createLocalStorage(initialCapture ? { __lbch_capture__: JSON.stringify(initialCapture) } : {});
 

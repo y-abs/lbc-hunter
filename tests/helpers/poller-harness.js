@@ -62,7 +62,7 @@ export function installFetchStub(responseFactory, { mode = "success", fail = nul
 export function seedLbcTab() {
   chrome.tabs._list.set(1, {
     id: 1,
-    url: "https://www.lbc.fr/",
+    url: "https://www.leboncoin.fr/",
     status: "complete",
     active: true,
     discarded: false,

@@ -23,7 +23,7 @@ export function makeAd(overrides = {}) {
     location: { lat: 48.8566, lng: 2.3522, city: "Paris", zipcode: "75001" },
     images: ["https://example.test/img.jpg"],
     attributes: [],
-    url: `https://www.lbc.fr/ad/collection/${id}`,
+    url: `https://www.leboncoin.fr/ad/collection/${id}`,
     ...overrides,
   };
 }

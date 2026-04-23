@@ -48,7 +48,7 @@ export const MSG = {
   // content-script → background IDB proxy.
   // CRITICAL: Chrome content scripts run in an isolated JS world but share
   // the *page's* origin for Web Storage (IndexedDB, localStorage, Cache API).
-  // A content script on lbc.fr that calls `openDB('lbc-hunter-db')`
+  // A content script on leboncoin.fr that calls `openDB('lbc-hunter-db')`
   // opens a DIFFERENT database than the service worker's extension-origin DB.
   // All content-script reads (badges, sidebar, ad-page chart) MUST proxy
   // through the SW via this message; otherwise every read returns empty.

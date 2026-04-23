@@ -28,16 +28,16 @@
     return out;
   }
 
-  // SECURITY: reject anything that isn't an actual https://api.lbc.fr/*
-  // request. Substring-matching `url.indexOf('api.lbc.fr')` is exploitable
-  // because any MAIN-world script on lbc.fr (ads, analytics, third-party
+  // SECURITY: reject anything that isn't an actual https://api.leboncoin.fr/*
+  // request. Substring-matching `url.indexOf('api.leboncoin.fr')` is exploitable
+  // because any MAIN-world script on leboncoin.fr (ads, analytics, third-party
   // widgets, other browser extensions injecting into MAIN) can call
-  //   fetch('https://evil.example/?hint=api.lbc.fr', { headers: { api_key: 'X'.repeat(40) } })
+  //   fetch('https://evil.example/?hint=api.leboncoin.fr', { headers: { api_key: 'X'.repeat(40) } })
   // and poison the api_key we later read from localStorage / postMessage.
   function isRealLbcApi(url) {
     try {
       const parsed = new URL(String(url || ""), location.origin);
-      return parsed.protocol === "https:" && parsed.hostname === "api.lbc.fr";
+      return parsed.protocol === "https:" && parsed.hostname === "api.leboncoin.fr";
     } catch (_) {
       return false;
     }

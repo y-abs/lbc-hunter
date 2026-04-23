@@ -484,7 +484,7 @@ export async function exportAllData() {
   const result = {};
   for (const store of Object.values(STORES)) {
     // NEVER export the session store — it contains the captured LBC `api_key`
-    // and `user_agent`, which grant full impersonation on lbc.fr until
+    // and `user_agent`, which grant full impersonation on leboncoin.fr until
     // the token rotates. Users frequently share backups with friends or paste
     // them into support threads; leaking the session token would let anyone
     // poll LBC (or worse, send messages / checkout) as that user.

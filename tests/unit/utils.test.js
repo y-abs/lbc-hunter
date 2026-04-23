@@ -88,26 +88,26 @@ describe("clamp", () => {
 
 describe("adUrl / lbcAdUrl", () => {
   it("adUrl returns canonical path", () => {
-    expect(adUrl("12345")).toBe("https://www.lbc.fr/ad/collection/12345");
+    expect(adUrl("12345")).toBe("https://www.leboncoin.fr/ad/collection/12345");
   });
-  it("lbcAdUrl accepts real lbc.fr URL", () => {
-    const url = "https://www.lbc.fr/ad/foo/99";
+  it("lbcAdUrl accepts real leboncoin.fr URL", () => {
+    const url = "https://www.leboncoin.fr/ad/foo/99";
     expect(lbcAdUrl(url, "99")).toBe(url);
   });
-  it("lbcAdUrl rejects non-lbc.fr hostname", () => {
-    expect(lbcAdUrl("https://evil.example/ad/1", "1")).toBe("https://www.lbc.fr/ad/collection/1");
+  it("lbcAdUrl rejects non-leboncoin.fr hostname", () => {
+    expect(lbcAdUrl("https://evil.example/ad/1", "1")).toBe("https://www.leboncoin.fr/ad/collection/1");
   });
   it("lbcAdUrl rejects http (non-https)", () => {
-    expect(lbcAdUrl("http://www.lbc.fr/ad/1", "1")).toBe("https://www.lbc.fr/ad/collection/1");
+    expect(lbcAdUrl("http://www.leboncoin.fr/ad/1", "1")).toBe("https://www.leboncoin.fr/ad/collection/1");
   });
   it("lbcAdUrl rejects javascript: protocol", () => {
-    expect(lbcAdUrl("javascript:alert(1)", "1")).toBe("https://www.lbc.fr/ad/collection/1");
+    expect(lbcAdUrl("javascript:alert(1)", "1")).toBe("https://www.leboncoin.fr/ad/collection/1");
   });
-  it("lbcAdUrl rejects lookalike domain (lbc.fr.evil.com)", () => {
-    expect(lbcAdUrl("https://www.lbc.fr.evil.com/ad/1", "1")).toBe("https://www.lbc.fr/ad/collection/1");
+  it("lbcAdUrl rejects lookalike domain (leboncoin.fr.evil.com)", () => {
+    expect(lbcAdUrl("https://www.leboncoin.fr.evil.com/ad/1", "1")).toBe("https://www.leboncoin.fr/ad/collection/1");
   });
-  it("lbcAdUrl accepts subdomain (m.lbc.fr)", () => {
-    expect(lbcAdUrl("https://m.lbc.fr/ad/1", "1")).toBe("https://m.lbc.fr/ad/1");
+  it("lbcAdUrl accepts subdomain (m.leboncoin.fr)", () => {
+    expect(lbcAdUrl("https://m.leboncoin.fr/ad/1", "1")).toBe("https://m.leboncoin.fr/ad/1");
   });
 });
 
@@ -259,13 +259,13 @@ describe("uuid", () => {
 
 describe("lbcAdUrl — null/undefined candidate falls back to canonical", () => {
   it("returns canonical URL when candidate is null", () => {
-    expect(lbcAdUrl(null, "12345")).toBe("https://www.lbc.fr/ad/collection/12345");
+    expect(lbcAdUrl(null, "12345")).toBe("https://www.leboncoin.fr/ad/collection/12345");
   });
   it("returns canonical URL when candidate is undefined", () => {
-    expect(lbcAdUrl(undefined, "99999")).toBe("https://www.lbc.fr/ad/collection/99999");
+    expect(lbcAdUrl(undefined, "99999")).toBe("https://www.leboncoin.fr/ad/collection/99999");
   });
   it("returns canonical URL when candidate is a number", () => {
-    expect(lbcAdUrl(12345, "12345")).toBe("https://www.lbc.fr/ad/collection/12345");
+    expect(lbcAdUrl(12345, "12345")).toBe("https://www.leboncoin.fr/ad/collection/12345");
   });
 });
 

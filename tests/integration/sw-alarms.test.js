@@ -103,7 +103,7 @@ describe("service-worker.js alarm flows", () => {
     const onAlarm = chrome.alarms.onAlarm.addListener.mock.calls[0][0];
     await onAlarm({ name: "session-refresh" });
 
-    expect(chrome.tabs.create).toHaveBeenCalledWith({ url: "https://www.lbc.fr/", active: false });
+    expect(chrome.tabs.create).toHaveBeenCalledWith({ url: "https://www.leboncoin.fr/", active: false });
     expect(chrome.storage.session.set).toHaveBeenCalledWith({ pending_refresh_tab: refreshTabId });
     expect(chrome.alarms.create).toHaveBeenCalledWith("refresh-tab-timeout", { delayInMinutes: 1 });
 

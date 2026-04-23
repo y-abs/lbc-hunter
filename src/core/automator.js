@@ -91,7 +91,7 @@ export async function sendAutoMessage(ad, templateId) {
   // Inject content script into active tab to fill & send the message.
   // Require status:'complete' — a still-loading tab lacks the ad DOM so the
   // textarea selector would miss and the message would be silently dropped.
-  const tabs = await chrome.tabs.query({ url: "*://www.lbc.fr/*", status: "complete" });
+  const tabs = await chrome.tabs.query({ url: "*://www.leboncoin.fr/*", status: "complete" });
   if (!tabs.length) {
     warn("No LBC tab open — cannot auto-message");
     return false;

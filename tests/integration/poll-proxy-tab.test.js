@@ -149,7 +149,7 @@ describe("poller.js - Proxy Tab Lifecycle", () => {
     await fetchViaContentScript("http://test.com");
 
     // 6. Assertions
-    expect(chrome.tabs.create).toHaveBeenCalledWith({ url: "https://www.lbc.fr/", active: false });
+    expect(chrome.tabs.create).toHaveBeenCalledWith({ url: "https://www.leboncoin.fr/", active: false });
     expect(chrome.storage.session.set).toHaveBeenCalledWith({ [PROXY_TAB_SESSION_KEY]: NEW_PROXY_TAB_ID });
     expect(chrome.tabs.update).toHaveBeenCalledWith(NEW_PROXY_TAB_ID, { autoDiscardable: false });
 

@@ -3,7 +3,7 @@
 //
 //  Chrome content scripts live in an isolated JS world but share the page's
 //  origin for Web Storage APIs (IndexedDB, localStorage, Cache). A content
-//  script on lbc.fr that opens IndexedDB under `lbc-hunter-db`
+//  script on leboncoin.fr that opens IndexedDB under `lbc-hunter-db`
 //  reads a DIFFERENT database than the service worker's extension-origin DB.
 //
 //  This module proxies reads through the SW via chrome.runtime.sendMessage

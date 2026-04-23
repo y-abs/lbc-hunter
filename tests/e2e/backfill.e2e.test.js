@@ -21,6 +21,7 @@ import {
   installBroadcastSpy,
   resetStores,
 } from "./helpers/launch-extension.js";
+import { E2E_API_SEARCH_MATCH, E2E_WEB_ORIGIN } from "./helpers/domains.js";
 
 test.describe.configure({ mode: "serial" });
 
@@ -57,7 +58,7 @@ function pageOf(startId, count, startDayOffset = 0) {
 test.beforeAll(async () => {
   env = await launchWithExtension({
     routes: {
-      "api.lbc.fr/finder/search": async (route) => {
+      [E2E_API_SEARCH_MATCH]: async (route) => {
         apiCallCount++;
         const res = await apiResponder(route.request(), apiCallCount);
         if (res?.__status) {
@@ -79,7 +80,7 @@ test.beforeAll(async () => {
 
   // Seed session via a real LBC tab load.
   const lbc = await env.context.newPage();
-  await lbc.goto("https://www.lbc.fr/");
+  await lbc.goto(`${E2E_WEB_ORIGIN}/`);
   for (let i = 0; i < 30; i++) {
     await lbc.waitForTimeout(100);
     const ok = await swEval(

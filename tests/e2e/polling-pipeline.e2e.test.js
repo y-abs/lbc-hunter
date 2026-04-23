@@ -1,10 +1,11 @@
-// E2E — full polling pipeline with intercepted api.lbc.fr.
+// E2E — full polling pipeline with intercepted api.leboncoin.fr.
 // Proves: watchlist save → content-script fetch proxy → SW pollWatchlist →
 //         API route fulfills → ads persisted → next poll fires alert.
 // This is the closest possible analogue to production without hitting LBC.
 
 import { test, expect } from "@playwright/test";
 import { launchWithExtension, swEval, openExtensionPage } from "./helpers/launch-extension.js";
+import { E2E_API_ROUTE_GLOBS, E2E_API_SEARCH_MATCH, E2E_WEB_ORIGIN } from "./helpers/domains.js";
 
 test.describe.configure({ mode: "serial" });
 
@@ -16,7 +17,7 @@ let apiResponder = () => ({ ads: [], total: 0 });
 test.beforeAll(async () => {
   env = await launchWithExtension({
     routes: {
-      "api.lbc.fr/finder/search": async (route) => {
+      [E2E_API_SEARCH_MATCH]: async (route) => {
         apiCallCount++;
         return route.fulfill({
           status: 200,
@@ -29,7 +30,7 @@ test.beforeAll(async () => {
 
   // Open an LBC tab so the SW has a content script to proxy through.
   const page = await env.context.newPage();
-  await page.goto("https://www.lbc.fr/");
+  await page.goto(`${E2E_WEB_ORIGIN}/`);
   // Wait for session capture to complete.
   for (let i = 0; i < 30; i++) {
     await page.waitForTimeout(100);
@@ -151,14 +152,16 @@ test("full polling pipeline: watchlist → SW → content-script fetch → API �
 
 test("auth failure surfaces to watchlist telemetry", async () => {
   apiCallCount = 0;
-  await env.context.unroute("**://api.lbc.fr/**").catch(() => {});
-  await env.context.route("**://api.lbc.fr/**", (route) =>
-    route.fulfill({
-      status: 401,
-      contentType: "application/json",
-      body: JSON.stringify({ error: "unauth" }),
-    }),
-  );
+  for (const glob of E2E_API_ROUTE_GLOBS) {
+    await env.context.unroute(glob).catch(() => {});
+    await env.context.route(glob, (route) =>
+      route.fulfill({
+        status: 401,
+        contentType: "application/json",
+        body: JSON.stringify({ error: "unauth" }),
+      }),
+    );
+  }
 
   await putWatchlist({
     id: "wl-e2e-401",

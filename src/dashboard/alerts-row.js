@@ -21,7 +21,7 @@ export function buildAlertsRow(ad, wlName) {
     ? `<img src="${escapeHtml(safeUrl(thumb, ""))}" class="alert-thumb-sm" data-lbch-hide-on-err="1">`
     : '<div class="alert-thumb-sm"></div>';
 
-  const adUrl = safeUrl(ad.url || `https://www.lbc.fr/annonce/${ad.id}`, "#");
+  const adUrl = safeUrl(ad.url || `https://www.leboncoin.fr/annonce/${ad.id}`, "#");
   const date = ad.seen_at
     ? new Date(ad.seen_at).toLocaleString("fr-FR", {
         day: "2-digit",

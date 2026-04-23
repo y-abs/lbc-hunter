@@ -460,7 +460,7 @@ function exportAlertsCsv(sep, filename) {
       ad.location?.city || "",
       ad.is_messaged ? "oui" : "non",
       ad.is_purchased ? "oui" : "non",
-      ad.url || `https://www.lbc.fr/annonce/${ad.id}`,
+      ad.url || `https://www.leboncoin.fr/annonce/${ad.id}`,
     ]
       .map(csvCell)
       .join(sep);
@@ -1055,7 +1055,7 @@ function renderFeed() {
       const shipInfo = resolveShipping(a);
       const ship = shipInfo.enabled ? (shipInfo.cost != null ? `🚚 ${shipInfo.cost}€` : "🚚 Oui") : "🤝 Main propre";
       const wlName = wlMap[a.list_id] || ""; // a.list_id = watchlist uuid (schema convention)
-      const adLink = safeUrl(a.url || `https://www.lbc.fr/annonce/${a.id}`, "#");
+      const adLink = safeUrl(a.url || `https://www.leboncoin.fr/annonce/${a.id}`, "#");
       const date = a.seen_at
         ? new Date(a.seen_at).toLocaleString("fr-FR", {
             day: "2-digit",

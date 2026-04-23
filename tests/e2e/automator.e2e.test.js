@@ -13,6 +13,7 @@
 
 import { test, expect } from "@playwright/test";
 import { launchWithExtension, swEval, openExtensionPage, resetStores } from "./helpers/launch-extension.js";
+import { E2E_API_SEARCH_MATCH, E2E_WEB_ORIGIN } from "./helpers/domains.js";
 
 test.describe.configure({ mode: "serial" });
 
@@ -30,7 +31,7 @@ function mkAd(id, { price = 120 } = {}) {
     index_date: iso,
     first_publication_date: iso,
     category_id: "30",
-    url: `https://www.lbc.fr/annonce/${id}/switch`,
+    url: `${E2E_WEB_ORIGIN}/annonce/${id}/switch`,
     location: { city: "Paris", zipcode: "75000", lat: 48.85, lng: 2.35 },
     owner: { type: "private", user_id: `u${id}`, name: "Alice" },
     images: { urls_large: [`http://x/${id}.jpg`] },
@@ -40,7 +41,7 @@ function mkAd(id, { price = 120 } = {}) {
 test.beforeAll(async () => {
   env = await launchWithExtension({
     routes: {
-      "api.lbc.fr/finder/search": async (route) =>
+      [E2E_API_SEARCH_MATCH]: async (route) =>
         route.fulfill({
           status: 200,
           contentType: "application/json",
@@ -51,7 +52,7 @@ test.beforeAll(async () => {
 
   // Seed session via LBC tab fixture.
   const lbc = await env.context.newPage();
-  await lbc.goto("https://www.lbc.fr/");
+  await lbc.goto(`${E2E_WEB_ORIGIN}/`);
   for (let i = 0; i < 30; i++) {
     await lbc.waitForTimeout(100);
     const ok = await swEval(
@@ -88,7 +89,7 @@ test.beforeAll(async () => {
 
 async function openAdTab(adId) {
   const page = await env.context.newPage();
-  await page.goto(`https://www.lbc.fr/annonce/${adId}/switch`);
+  await page.goto(`${E2E_WEB_ORIGIN}/annonce/${adId}/switch`);
   await page.waitForSelector('[data-qa-id="adview_contact_container"] textarea', { timeout: 5000 });
   return page;
 }
@@ -330,7 +331,7 @@ test("CONFIRM_PURCHASE: lite checkout opens a tab and persists one pending row",
     list_id: "wl-auto-buy",
     price: 150,
     subject: "Cheap Switch",
-    url: `https://www.lbc.fr/annonce/${adId}/switch`,
+    url: `${E2E_WEB_ORIGIN}/annonce/${adId}/switch`,
     seen_at: Date.now(),
     is_alerted: true,
   });
@@ -369,7 +370,7 @@ test("checkout idempotency: second CONFIRM_PURCHASE within 5-min window is a no-
     list_id: "wl-auto-idem-buy",
     price: 180,
     subject: "x",
-    url: `https://www.lbc.fr/annonce/${adId}/switch`,
+    url: `${E2E_WEB_ORIGIN}/annonce/${adId}/switch`,
     seen_at: Date.now(),
     is_alerted: true,
   });

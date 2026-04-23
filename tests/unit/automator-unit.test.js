@@ -315,7 +315,7 @@ describe("sendAutoMessage — happy path", () => {
       name: "Test Template",
       body: 'Bonjour {vendeur}, votre annonce "{titre}" pour {prix}€ est-elle toujours disponible à {ville} ?',
     };
-    const lbcTab = { id: 101, url: "https://www.lbc.fr/" };
+    const lbcTab = { id: 101, url: "https://www.leboncoin.fr/" };
 
     await db.saveAd(ad);
     await db.saveTemplate(template);
@@ -330,7 +330,7 @@ describe("sendAutoMessage — happy path", () => {
     expect(result).toBe(true);
 
     // 1. LBC tab was found
-    expect(chrome.tabs.query).toHaveBeenCalledWith({ url: "*://www.lbc.fr/*", status: "complete" });
+    expect(chrome.tabs.query).toHaveBeenCalledWith({ url: "*://www.leboncoin.fr/*", status: "complete" });
 
     // 2. Script was executed with interpolated message
     expect(execSpy).toHaveBeenCalledTimes(1);
