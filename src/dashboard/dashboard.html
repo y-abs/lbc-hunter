@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LbC Hunter — Tableau de bord</title>
+    <link rel="stylesheet" href="dashboard.css" />
+  </head>
+
+  <body>
+    <div class="app">
+      <!-- Top bar -->
+      <header class="topbar">
+        <div class="topbar__logo">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 32 32"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <circle cx="16" cy="16" r="16" fill="#FF6B35" />
+            <path
+              d="M8 22 L12 10 L16 18 L20 10 L24 22"
+              stroke="#fff"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              fill="none"
+            />
+          </svg>
+          <span>LBC <strong>Hunter</strong> <span class="topbar__subtitle">Mes achats &amp; profits</span></span>
+        </div>
+        <div class="topbar__actions">
+          <select id="period-select" class="period-select">
+            <option value="month">Ce mois</option>
+            <option value="quarter">Ce trimestre</option>
+            <option value="all" selected>Tout</option>
+          </select>
+          <button
+            class="btn btn--ghost btn--sm btn-demo-toggle"
+            id="btn-demo-toggle"
+            title="Charger des données de démonstration"
+          >
+            <span id="demo-topbar-dot" class="demo-topbar-dot"></span>
+            🎭 Démo
+          </button>
+          <button class="btn btn--ghost" id="btn-add-purchase">+ Ajouter achat</button>
+        </div>
+      </header>
+
+      <!-- Tab bar -->
+      <nav class="tab-bar">
+        <button class="tab-btn active" data-tab="alerts">
+          <svg class="tab-icon" viewBox="0 0 20 20" fill="none">
+            <path
+              d="M10 2a6 6 0 00-6 6c0 3.5-1.5 5-1.5 5h15S16 11.5 16 8a6 6 0 00-6-6zm0 16a2 2 0 01-2-2h4a2 2 0 01-2 2z"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Alertes <span class="tab-count" id="alerts-tab-count"></span>
+        </button>
+        <button class="tab-btn" data-tab="stats">
+          <svg class="tab-icon" viewBox="0 0 20 20" fill="none">
+            <path
+              d="M3 14l4-5 4 3 4-7 2 3"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Statistiques
+        </button>
+        <button class="tab-btn" data-tab="feed">
+          <svg class="tab-icon" viewBox="0 0 20 20" fill="none">
+            <rect x="3" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.7" />
+            <path d="M3 8h14M7 12h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+          Annonces
+        </button>
+        <button class="tab-btn" data-tab="market">
+          <svg class="tab-icon" viewBox="0 0 20 20" fill="none">
+            <polyline
+              points="2,14 6,9 10,12 14,5 18,8"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              fill="none"
+            />
+          </svg>
+          Marché
+        </button>
+      </nav>
+
+      <!-- ALERTS TAB (default) -->
+      <div id="tab-alerts">
+        <section class="table-section">
+          <div class="table-header">
+            <h2>Historique des alertes</h2>
+            <div class="table-filters">
+              <select id="alerts-filter-period">
+                <option value="0">Toutes</option>
+                <option value="1">Aujourd'hui</option>
+                <option value="7">7 derniers jours</option>
+                <option value="30">30 derniers jours</option>
+              </select>
+              <select id="alerts-filter-tier">
+                <option value="">Tous les tiers</option>
+                <option value="red">🔴 Rouge</option>
+                <option value="orange">🟠 Orange</option>
+              </select>
+              <select id="alerts-filter-status">
+                <option value="">Tous statuts</option>
+                <option value="available">✅ Disponible</option>
+                <option value="sold">❌ Vendu</option>
+              </select>
+              <select id="alerts-filter-type">
+                <option value="">Tous types</option>
+                <option value="real">🔔 Alertes réelles</option>
+                <option value="backfill">📋 Seed historique</option>
+              </select>
+              <select id="alerts-filter-watchlist">
+                <option value="">Toutes les watchlists</option>
+              </select>
+              <button class="btn btn--ghost btn--sm" id="btn-alerts-filter-archived" title="Afficher les archivés">
+                🗄 Archivés
+              </button>
+              <button
+                class="btn btn--ghost btn--sm"
+                id="btn-alerts-filter-flagged"
+                title="Afficher seulement les favoris"
+              >
+                ☆ Favoris
+              </button>
+              <input type="search" id="alerts-search" placeholder="Rechercher…" />
+              <button class="btn btn--ghost btn--sm" id="btn-export-alerts-csv2">📄 CSV</button>
+              <button class="btn btn--ghost btn--sm" id="btn-export-alerts-excel" title="Format Excel (séparateur ;)">
+                📊 Excel
+              </button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" id="alerts-full-table">
+              <thead>
+                <tr>
+                  <th class="th-sort" data-sortcol="is_flagged" style="width: 36px" title="Trier par favoris">⭐</th>
+                  <th style="width: 48px"></th>
+                  <th class="th-sort" data-sortcol="alert_tier" style="width: 90px">Tier</th>
+                  <th>Titre</th>
+                  <th class="th-sort" data-sortcol="price">Prix</th>
+                  <th class="th-sort" data-sortcol="pct_below_market">vs marché</th>
+                  <th>Watchlist</th>
+                  <th>Ville</th>
+                  <th class="th-sort" data-sortcol="seen_at">Date</th>
+                  <th class="th-sort" data-sortcol="ad_status" style="width: 80px">Statut</th>
+                  <th style="width: 36px" title="Archiver"></th>
+                </tr>
+              </thead>
+              <tbody id="alerts-full-tbody"></tbody>
+            </table>
+            <div class="empty-state" id="alerts-full-empty">Aucune alerte enregistrée</div>
+          </div>
+          <div id="alerts-pagination" class="pagination-bar"></div>
+        </section>
+      </div>
+      <!-- /#tab-alerts -->
+
+      <div id="tab-stats" class="hidden">
+        <!-- KPI row -->
+        <section class="kpi-bar">
+          <div class="kpi kpi--accent">
+            <span class="kpi-label">Profit net</span>
+            <span class="kpi-value" id="kpi-profit">—</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">Achats</span>
+            <span class="kpi-value" id="kpi-buys">—</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">ROI moyen</span>
+            <span class="kpi-value" id="kpi-roi">—</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">Meilleure catégorie</span>
+            <span class="kpi-value" id="kpi-cat">—</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">En cours</span>
+            <span class="kpi-value" id="kpi-active">—</span>
+          </div>
+        </section>
+
+        <!-- Charts grid -->
+        <section class="charts-grid">
+          <div class="chart-card chart-card--wide">
+            <h3>Profit mensuel</h3>
+            <canvas id="chart-monthly"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>Top produits par profit</h3>
+            <canvas id="chart-top-products"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>Distribution des marges</h3>
+            <canvas id="chart-margins"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>Plateformes de revente</h3>
+            <canvas id="chart-platforms"></canvas>
+          </div>
+        </section>
+
+        <!-- Journal table -->
+        <section class="table-section">
+          <div class="table-header">
+            <h2>Journal des achats / reventes</h2>
+            <div class="table-filters">
+              <select id="filter-status">
+                <option value="">Tous les statuts</option>
+                <option value="bought">Acheté</option>
+                <option value="listed">En vente</option>
+                <option value="sold">Vendu</option>
+              </select>
+              <select id="filter-platform">
+                <option value="">Toutes plateformes</option>
+                <option>lbc</option>
+                <option>vinted</option>
+                <option>ebay</option>
+                <option>facebook</option>
+                <option>other</option>
+              </select>
+              <button class="btn btn--ghost btn--sm" id="btn-export-csv">📤 Export CSV</button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table" id="stats-table">
+              <thead>
+                <tr>
+                  <th data-sort="title">Titre ↕</th>
+                  <th data-sort="buy_date">Acheté ↕</th>
+                  <th data-sort="buy_price">Prix achat ↕</th>
+                  <th data-sort="sell_date">Vendu ↕</th>
+                  <th data-sort="sell_price">Prix vente ↕</th>
+                  <th>Plateforme</th>
+                  <th>Frais</th>
+                  <th data-sort="profit">Profit net ↕</th>
+                  <th>Statut</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="stats-tbody"></tbody>
+            </table>
+            <div class="empty-state" id="stats-empty">Aucun achat enregistré</div>
+          </div>
+        </section>
+      </div>
+      <!-- /#tab-stats -->
+
+      <!-- Feed tab -->
+      <div id="tab-feed" class="hidden">
+        <section class="table-section">
+          <div class="table-header">
+            <h2>📋 Annonces récentes</h2>
+            <div class="table-filters">
+              <select id="feed-period" class="period-select">
+                <option value="1">Aujourd'hui</option>
+                <option value="7">7 jours</option>
+                <option value="30">30 jours</option>
+                <option value="0" selected>Tout</option>
+              </select>
+              <select id="feed-watchlist">
+                <option value="">Toutes les watchlists</option>
+              </select>
+              <input type="search" id="feed-search" placeholder="Rechercher…" />
+              <button class="btn btn--ghost btn--sm" id="btn-export-feed-csv">📤 Export CSV</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table" id="feed-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Titre</th>
+                  <th>Prix</th>
+                  <th>Livraison</th>
+                  <th>% vs marché</th>
+                  <th>Tier</th>
+                  <th>Type</th>
+                  <th>Watchlist</th>
+                  <th>Ville</th>
+                  <th style="width: 36px" title="Écarter"></th>
+                </tr>
+              </thead>
+              <tbody id="feed-tbody"></tbody>
+            </table>
+            <div class="empty-state" id="feed-empty">Aucune annonce dans cette période</div>
+            <div class="table-pagination" id="feed-pagination"></div>
+          </div>
+        </section>
+      </div>
+      <!-- /#tab-feed -->
+
+      <!-- MARCHÉ TAB -->
+      <div id="tab-market" class="hidden">
+        <section class="table-section">
+          <div class="table-header">
+            <h2>Évolution du marché</h2>
+            <div class="table-filters">
+              <select id="market-watchlist">
+                <option value="">-- Choisir une recherche --</option>
+              </select>
+              <select id="market-period">
+                <option value="30">30 jours</option>
+                <option value="90" selected>90 jours</option>
+                <option value="180">180 jours</option>
+                <option value="365">1 an</option>
+                <option value="0">Tout</option>
+              </select>
+              <button class="btn btn--ghost btn--sm" id="btn-export-market-csv">📄 CSV marché</button>
+            </div>
+          </div>
+
+          <div class="market-stats-strip" id="market-stats-strip">
+            <div class="market-stat">
+              <span class="market-stat__label">Médiane actuelle</span>
+              <span class="market-stat__value" id="market-stat-median">—</span>
+            </div>
+            <div class="market-stat">
+              <span class="market-stat__label">Moyenne actuelle</span>
+              <span class="market-stat__value" id="market-stat-avg">—</span>
+            </div>
+            <div class="market-stat">
+              <span class="market-stat__label">Tendance (période)</span>
+              <span class="market-stat__value" id="market-stat-trend">—</span>
+            </div>
+            <div class="market-stat">
+              <span class="market-stat__label">Échantillons</span>
+              <span class="market-stat__value" id="market-stat-samples">—</span>
+            </div>
+          </div>
+
+          <div id="market-chart-wrap" class="chart-card chart-card--full hidden" style="padding: 20px 24px">
+            <canvas id="chart-market"></canvas>
+          </div>
+          <div class="empty-state" id="market-empty">Sélectionnez une recherche pour voir l'évolution des prix</div>
+        </section>
+      </div>
+      <!-- /#tab-market -->
+    </div>
+    <!-- /.app -->
+
+    <!-- Add/Edit Purchase Modal -->
+    <div class="modal-overlay hidden" id="purchase-modal">
+      <div class="modal modal--wide">
+        <h2 id="purchase-modal-title">Ajouter un achat</h2>
+        <form id="purchase-form" novalidate>
+          <input type="hidden" id="p-id" />
+          <div class="form-grid">
+            <div class="form-group form-group--full">
+              <label for="p-title">Titre <span class="required">*</span></label>
+              <input type="text" id="p-title" required />
+            </div>
+            <div class="form-group">
+              <label for="p-buy-price">Prix d'achat (€) <span class="required">*</span></label>
+              <input type="number" id="p-buy-price" min="0" step="0.01" required />
+            </div>
+            <div class="form-group">
+              <label for="p-buy-date">Date d'achat</label>
+              <input type="date" id="p-buy-date" />
+            </div>
+            <div class="form-group">
+              <label for="p-sell-price">Prix de vente (€)</label>
+              <input type="number" id="p-sell-price" min="0" step="0.01" />
+            </div>
+            <div class="form-group">
+              <label for="p-sell-date">Date de vente</label>
+              <input type="date" id="p-sell-date" />
+            </div>
+            <div class="form-group">
+              <label for="p-platform">Plateforme de revente</label>
+              <select id="p-platform">
+                <option value="">—</option>
+                <option value="lbc">LbC</option>
+                <option value="vinted">Vinted</option>
+                <option value="ebay">eBay</option>
+                <option value="facebook">Facebook</option>
+                <option value="other">Autre</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="p-fees">Frais plateforme (%)</label>
+              <input type="number" id="p-fees" min="0" max="100" step="0.1" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="p-status">Statut</label>
+              <select id="p-status">
+                <option value="bought">Acheté</option>
+                <option value="listed">En vente</option>
+                <option value="sold">Vendu</option>
+              </select>
+            </div>
+            <div class="form-group form-group--full">
+              <label for="p-notes">Notes</label>
+              <textarea id="p-notes" rows="2"></textarea>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn--ghost" id="btn-cancel-purchase">Annuler</button>
+            <button type="submit" class="btn btn--primary">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Confirm modal -->
+    <div class="modal-overlay hidden" id="confirm-modal">
+      <div class="modal">
+        <p id="confirm-text">Êtes-vous sûr ?</p>
+        <div class="modal-actions">
+          <button class="btn btn--ghost" id="confirm-cancel">Annuler</button>
+          <button class="btn btn--danger" id="confirm-ok">Confirmer</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Demo footer -->
+    <footer class="demo-footer" id="demo-footer">
+      <span class="demo-footer__hint">🎭 Mode démo actif — données fictives pour la démonstration</span>
+      <button id="btn-demo-off" class="btn btn--ghost btn--sm demo-toggle-btn">
+        <span class="demo-dot" id="demo-dot"></span>
+        Désactiver
+      </button>
+    </footer>
+
+    <script src="dashboard.js" type="module"></script>
+  </body>
+</html>

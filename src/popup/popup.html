@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=380" />
+    <title>LbC Hunter</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="header__logo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" fill="#FF6B35" opacity=".18" />
+          <polyline
+            points="5,16 9,11 13,14 19,8"
+            stroke="#FF6B35"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span class="header__title">LBC <strong>Hunter</strong></span>
+      </div>
+      <div class="header__actions">
+        <button id="btn-sound-toggle" class="icon-btn" title="Son activé">🔊</button>
+        <button id="btn-dashboard" class="icon-btn" title="Ouvrir le tableau de bord">📊</button>
+        <button id="btn-options" class="icon-btn" title="Paramètres">⚙️</button>
+      </div>
+    </header>
+
+    <!-- Status bar -->
+    <div class="status-bar" id="status-bar">
+      <div class="status-bar__left">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text" class="status-text">Chargement…</span>
+      </div>
+      <div class="status-bar__right">
+        <label class="toggle-label" title="Pause/Reprendre le polling">
+          <input type="checkbox" id="toggle-pause" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Session warning -->
+    <div class="session-warning hidden" id="session-warning">
+      ⚠ Session expirée — <a href="https://www.lbc.fr" target="_blank">visitez lbc.fr</a>
+    </div>
+    <div class="no-tab-warning hidden" id="no-tab-warning">⚠ Ouvrez un onglet lbc.fr pour activer le polling</div>
+
+    <!-- Recent alerts -->
+    <section class="section">
+      <div class="section__header">
+        <span class="section__title">Annonces récentes</span>
+        <div class="section__actions">
+          <button id="btn-mark-all-read" class="text-btn">Tout vu</button>
+          <button id="btn-open-alerts" class="text-btn text-btn--dim" title="Voir dans le dashboard">→</button>
+        </div>
+      </div>
+      <div id="alert-list" class="alert-list">
+        <div class="empty-state" id="empty-alerts">Aucune annonce pour le moment</div>
+      </div>
+    </section>
+
+    <!-- Active watchlists -->
+    <section class="section">
+      <div class="section__header">
+        <span class="section__title">Recherches actives</span>
+        <button id="btn-add-watchlist" class="text-btn">+ Ajouter</button>
+      </div>
+      <div id="watchlist-list" class="watchlist-list">
+        <div class="empty-state" id="empty-watchlists">Aucune recherche configurée</div>
+      </div>
+    </section>
+
+    <script src="popup.js" type="module"></script>
+
+    <!-- Demo footer -->
+    <footer class="demo-footer hidden" id="demo-footer">
+      <button id="btn-demo-toggle" class="demo-toggle-btn" title="Activer/désactiver le mode démo">
+        <span class="demo-dot" id="demo-dot"></span>
+        <span id="demo-label">Mode démo</span>
+      </button>
+    </footer>
+  </body>
+</html>

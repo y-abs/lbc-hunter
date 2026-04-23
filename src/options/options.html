@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LbC Hunter — Paramètres</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+
+  <body>
+    <div class="app">
+      <!-- Sidebar -->
+      <nav class="sidebar">
+        <div class="sidebar__logo">
+          <svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="16" r="16" fill="#FF6B35" />
+            <path
+              d="M8 22 L12 10 L16 18 L20 10 L24 22"
+              stroke="#fff"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              fill="none"
+            />
+          </svg>
+          <span>LBC <strong>Hunter</strong></span>
+        </div>
+        <ul class="sidebar__nav" role="tablist">
+          <li>
+            <button class="nav-item active" data-tab="watchlists" role="tab" aria-selected="true">
+              <svg class="nav-icon" viewBox="0 0 20 20" fill="none">
+                <circle cx="9" cy="9" r="5.5" stroke="currentColor" stroke-width="1.7" />
+                <path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+              </svg>
+              Recherches
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-tab="templates" role="tab">
+              <svg class="nav-icon" viewBox="0 0 20 20" fill="none">
+                <rect x="3" y="4" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.7" />
+                <path d="M3 8h14M7 12h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              Templates
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-tab="stats" role="tab">
+              <svg class="nav-icon" viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M3 14l4-5 4 3 4-7 2 3"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Statistiques
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-tab="blacklist" role="tab">
+              <svg class="nav-icon" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.7" />
+                <path d="M5 5l10 10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+              </svg>
+              Bloqués
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-tab="settings" role="tab">
+              <svg class="nav-icon" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.7" />
+                <path
+                  d="M10 2v2M10 16v2M2 10h2M16 10h2M4.2 4.2l1.4 1.4M14.4 14.4l1.4 1.4M4.2 15.8l1.4-1.4M14.4 5.6l1.4-1.4"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+              Paramètres
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-tab="fullauto" role="tab">
+              <svg class="nav-icon" viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M10 2L13 8H18L14 12L16 18L10 14L4 18L6 12L2 8H7Z"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linejoin="round"
+                  fill="none"
+                />
+              </svg>
+              Full Auto <span class="beta-badge">BETA</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Main -->
+      <main class="main">
+        <!-- ── Tab: Watchlists ── -->
+        <section class="tab-panel" id="tab-watchlists">
+          <div class="panel-header">
+            <div class="panel-header__left">
+              <h1>Recherches surveillées</h1>
+              <p class="panel-desc">Configurez vos alertes automatiques sur LbC.</p>
+            </div>
+            <button class="btn btn--primary" id="btn-new-watchlist">
+              <svg viewBox="0 0 16 16" fill="none" width="13" height="13">
+                <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+              Nouvelle recherche
+            </button>
+          </div>
+          <div id="watchlist-cards" class="card-grid"></div>
+
+          <!-- Edit / Create form (hidden by default) -->
+          <div class="form-panel hidden" id="watchlist-form-panel">
+            <div class="form-panel__header">
+              <h2 id="watchlist-form-title">Nouvelle recherche</h2>
+            </div>
+            <form id="watchlist-form" novalidate>
+              <input type="hidden" id="wl-id" />
+              <fieldset class="fieldset">
+                <legend class="fieldset__legend">Recherche</legend>
+                <div class="form-grid">
+                  <div class="form-group form-group--full">
+                    <label for="wl-name">Nom de la recherche <span class="required">*</span></label>
+                    <input type="text" id="wl-name" placeholder="ex: iPhone 14 Pro" required />
+                  </div>
+                  <div class="form-group form-group--full">
+                    <label for="wl-keywords">Mots-clés <span class="required">*</span></label>
+                    <input type="text" id="wl-keywords" placeholder="ex: iphone 14 pro" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="wl-category">Catégorie</label>
+                    <select id="wl-category"></select>
+                  </div>
+                  <div class="form-group">
+                    <label for="wl-seller-type">Type de vendeur</label>
+                    <select id="wl-seller-type">
+                      <option value="all">Tous</option>
+                      <option value="private">Particulier</option>
+                      <option value="pro">Professionnel</option>
+                    </select>
+                  </div>
+                </div>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset__legend">Prix &amp; Géographie</legend>
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="wl-price-min">Prix min (€)</label>
+                    <input type="number" id="wl-price-min" min="0" placeholder="0" />
+                  </div>
+                  <div class="form-group">
+                    <label for="wl-price-max">Prix max (€)</label>
+                    <input type="number" id="wl-price-max" min="0" placeholder="99999" />
+                  </div>
+                  <div class="form-group">
+                    <label for="wl-zip">Code postal</label>
+                    <input type="text" id="wl-zip" placeholder="75001 (vide = France entière)" maxlength="5" />
+                    <input type="hidden" id="wl-lat" />
+                    <input type="hidden" id="wl-lng" />
+                    <span id="wl-geo-hint" class="hint"></span>
+                  </div>
+                  <div class="form-group">
+                    <label for="wl-radius">Rayon (km) — <span id="wl-radius-val">0 = national</span></label>
+                    <input type="range" id="wl-radius" min="0" max="200" step="5" value="0" />
+                  </div>
+                </div>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset__legend">Alertes &amp; Polling</legend>
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="wl-interval">Intervalle de polling</label>
+                    <select id="wl-interval">
+                      <option value="30">30 secondes</option>
+                      <option value="60" selected>1 minute</option>
+                      <option value="120">2 minutes</option>
+                      <option value="300">5 minutes</option>
+                      <option value="900">15 minutes</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="wl-threshold">Seuil alerte rouge</label>
+                    <span class="hint"
+                      >🔴 Rouge si prix ≥ <strong><span id="wl-threshold-val">15</span>%</strong> sous la médiane du
+                      marché &nbsp;·&nbsp; 🟠 Orange si en-dessous du seuil ou sans données suffisantes</span
+                    >
+                    <div class="range-row">
+                      <input type="range" id="wl-threshold" min="0" max="50" step="1" value="15" />
+                      <input
+                        type="number"
+                        id="wl-threshold-num"
+                        min="0"
+                        max="50"
+                        step="1"
+                        value="15"
+                        class="range-num-input"
+                      />
+                      <span class="range-unit">%</span>
+                    </div>
+                  </div>
+                  <div class="form-group form-group--full">
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="wl-auto-tab" />
+                      <span>Ouvrir automatiquement l'onglet (alertes rouges uniquement)</span>
+                    </label>
+                  </div>
+                  <div class="form-group form-group--full">
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="wl-auto-msg" />
+                      <span>Envoyer automatiquement un message</span>
+                    </label>
+                    <div id="wl-template-select-wrap" class="hidden sub-field">
+                      <select id="wl-template-select"></select>
+                    </div>
+                  </div>
+                  <div class="form-group form-group--full">
+                    <label>Livraison</label>
+                    <div class="radio-group">
+                      <label class="radio-label"
+                        ><input type="radio" name="wl-shipping" id="wl-shipping-any" value="any" checked /><span
+                          >Toutes</span
+                        ></label
+                      >
+                      <label class="radio-label"
+                        ><input type="radio" name="wl-shipping" id="wl-shipping-delivery" value="delivery_only" /><span
+                          >Livraison uniquement</span
+                        ></label
+                      >
+                      <label class="radio-label"
+                        ><input type="radio" name="wl-shipping" id="wl-shipping-local" value="local_only" /><span
+                          >En main propre</span
+                        ></label
+                      >
+                    </div>
+                  </div>
+                  <div class="form-group form-group--full">
+                    <label class="checkbox-label">
+                      <input type="checkbox" id="wl-require-market" checked />
+                      <span
+                        >Alerter seulement si données marché disponibles
+                        <span class="hint">(décocher = alerter même sans historique de prix)</span></span
+                      >
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+              <fieldset class="fieldset">
+                <legend class="fieldset__legend">Achat automatique</legend>
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="wl-purchase-mode">Mode achat automatique</label>
+                    <select id="wl-purchase-mode">
+                      <option value="off">Désactivé</option>
+                      <option value="lite">Lite (bouton notification)</option>
+                      <option
+                        value="full"
+                        disabled
+                        title="Non disponible — achat entièrement automatique pas encore câblé côté poller"
+                      >
+                        Full Auto (indisponible)
+                      </option>
+                    </select>
+                  </div>
+                  <div class="form-group" id="wl-budget-wrap">
+                    <label for="wl-budget-max">Budget max par achat (€)</label>
+                    <input type="number" id="wl-budget-max" min="0" max="10000" step="10" value="500" />
+                  </div>
+                </div>
+              </fieldset>
+              <fieldset class="fieldset" id="wl-backfill-fieldset">
+                <legend class="fieldset__legend">Historique de démarrage</legend>
+                <div class="form-grid">
+                  <div class="form-group form-group--full">
+                    <label for="wl-backfill"
+                      >Charger les annonces des X derniers jours comme historique
+                      <span class="hint" id="wl-backfill-hint">(uniquement à la création)</span></label
+                    >
+                    <select id="wl-backfill">
+                      <option value="0">Aucun — commencer à zéro</option>
+                      <option value="7">7 jours</option>
+                      <option value="14">14 jours</option>
+                      <option value="30">1 mois</option>
+                      <option value="90">3 mois</option>
+                      <option value="180">6 mois</option>
+                      <option value="365">1 an</option>
+                    </select>
+                  </div>
+                </div>
+              </fieldset>
+              <div class="form-actions">
+                <button type="button" class="btn btn--ghost" id="btn-cancel-watchlist">Annuler</button>
+                <button type="submit" class="btn btn--primary">Enregistrer</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ── Tab: Templates ── -->
+        <section class="tab-panel hidden" id="tab-templates">
+          <div class="panel-header">
+            <div class="panel-header__left">
+              <h1>Templates de messages</h1>
+              <p class="panel-desc">Modèles pour l'envoi automatique de messages aux vendeurs.</p>
+            </div>
+            <button class="btn btn--primary" id="btn-new-template">
+              <svg viewBox="0 0 16 16" fill="none" width="13" height="13">
+                <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+              Nouveau template
+            </button>
+          </div>
+          <div id="template-list" class="card-list"></div>
+
+          <div class="form-panel hidden" id="template-form-panel">
+            <div class="form-panel__header">
+              <h2 id="template-form-title">Nouveau template</h2>
+            </div>
+            <form id="template-form" novalidate>
+              <input type="hidden" id="tpl-id" />
+              <div class="form-group">
+                <label for="tpl-name">Nom</label>
+                <input type="text" id="tpl-name" required placeholder="ex: Offre rapide" />
+              </div>
+              <div class="form-group">
+                <label for="tpl-body">
+                  Message
+                  <span class="hint"
+                    >Variables: <code>{titre}</code> <code>{prix}</code> <code>{ville}</code>
+                    <code>{vendeur}</code></span
+                  >
+                </label>
+                <textarea id="tpl-body" rows="6" required placeholder="Bonjour, je suis intéressé…"></textarea>
+              </div>
+              <div class="form-actions">
+                <button type="button" class="btn btn--ghost" id="btn-cancel-template">Annuler</button>
+                <button type="submit" class="btn btn--primary">Enregistrer</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ── Tab: Stats ── -->
+        <section class="tab-panel hidden" id="tab-stats">
+          <div class="panel-header">
+            <div class="panel-header__left">
+              <h1>Statistiques de marché</h1>
+              <p class="panel-desc">Prix moyens observés par vos recherches actives.</p>
+            </div>
+          </div>
+          <div class="stats-controls">
+            <select id="stats-keyword-select">
+              <option value="">— Sélectionner une recherche —</option>
+            </select>
+            <select id="stats-range-select">
+              <option value="30">30 derniers jours</option>
+              <option value="60">60 derniers jours</option>
+              <option value="90" selected>90 derniers jours</option>
+            </select>
+          </div>
+          <div id="stats-kpis" class="kpi-row hidden">
+            <div class="kpi"><span class="kpi-label">Min</span><span class="kpi-value" id="kpi-min">—</span></div>
+            <div class="kpi"><span class="kpi-label">Moyenne</span><span class="kpi-value" id="kpi-avg">—</span></div>
+            <div class="kpi"><span class="kpi-label">Médiane</span><span class="kpi-value" id="kpi-med">—</span></div>
+            <div class="kpi"><span class="kpi-label">Max</span><span class="kpi-value" id="kpi-max">—</span></div>
+            <div class="kpi">
+              <span class="kpi-label">Échantillons</span><span class="kpi-value" id="kpi-count">—</span>
+            </div>
+          </div>
+          <div class="chart-wrapper"><canvas id="stats-chart"></canvas></div>
+        </section>
+
+        <!-- ── Tab: Blacklist ── -->
+        <section class="tab-panel hidden" id="tab-blacklist">
+          <div class="panel-header">
+            <div class="panel-header__left">
+              <h1>Vendeurs bloqués</h1>
+              <p class="panel-desc">Ces vendeurs ne déclencheront plus d'alertes.</p>
+            </div>
+          </div>
+          <div id="blacklist-table-wrap" class="table-wrap">
+            <table id="blacklist-table" class="data-table">
+              <thead>
+                <tr>
+                  <th>Seller ID</th>
+                  <th>Raison</th>
+                  <th>Date</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="blacklist-tbody"></tbody>
+            </table>
+            <div class="empty-state" id="blacklist-empty">Aucun vendeur bloqué</div>
+          </div>
+        </section>
+
+        <!-- ── Tab: Settings ── -->
+        <section class="tab-panel hidden" id="tab-settings">
+          <div class="panel-header">
+            <div class="panel-header__left">
+              <h1>Paramètres généraux</h1>
+              <p class="panel-desc">Alertes, notifications, données et achat automatique.</p>
+            </div>
+          </div>
+          <div class="settings-block">
+            <h2 class="settings-block__title">Alertes sonores &amp; messages</h2>
+            <div class="settings-grid">
+              <div class="form-group">
+                <label for="setting-sound">Son d'alerte</label>
+                <select id="setting-sound">
+                  <option value="both">Rouge + Orange</option>
+                  <option value="red">Rouge uniquement</option>
+                  <option value="none">Désactivé</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="setting-msg-hour">Max messages / heure</label>
+                <input type="number" id="setting-msg-hour" min="1" max="50" value="15" />
+              </div>
+              <div class="form-group">
+                <label for="setting-msg-day">Max messages / jour</label>
+                <input type="number" id="setting-msg-day" min="1" max="200" value="50" />
+              </div>
+            </div>
+            <div class="settings-actions">
+              <button class="btn btn--primary" id="btn-save-settings">Enregistrer</button>
+            </div>
+          </div>
+          <div class="settings-divider"></div>
+
+          <!-- ntfy.sh push notifications -->
+          <div class="settings-block">
+            <h2 class="settings-block__title">📱 Notifications téléphone (ntfy.sh)</h2>
+            <div class="ntfy-guide">
+              <div class="ntfy-step">
+                <span class="ntfy-step__num">1</span
+                ><span
+                  >Téléchargez l'app <strong>ntfy</strong>
+                  <a href="https://play.google.com/store/apps/details?id=io.heckel.ntfy" target="_blank" rel="noopener"
+                    >Android</a
+                  >
+                  / <a href="https://apps.apple.com/app/ntfy/id1625396347" target="_blank" rel="noopener">iOS</a> —
+                  gratuite, sans compte.</span
+                >
+              </div>
+              <div class="ntfy-step">
+                <span class="ntfy-step__num">2</span
+                ><span
+                  >Dans l'app, tapez <strong>"+"</strong> et saisissez un <em>topic</em> secret à vous, ex&nbsp;:
+                  <code>mon-lbc-hunter-2024</code></span
+                >
+              </div>
+              <div class="ntfy-step">
+                <span class="ntfy-step__num">3</span
+                ><span
+                  >Collez ce même topic ci-dessous et cliquez <strong>"Tester"</strong> — vous devez recevoir une
+                  notification.</span
+                >
+              </div>
+            </div>
+            <div class="settings-grid">
+              <div class="form-group">
+                <label for="ntfy-topic">Votre topic ntfy.sh <span class="hint">(ne partagez pas ce code)</span></label>
+                <input type="text" id="ntfy-topic" placeholder="ex: mon-lbc-hunter-2024" />
+              </div>
+              <div class="form-group">
+                <label for="ntfy-server"
+                  >Serveur <span class="hint">(optionnel — laissez vide pour ntfy.sh officiel)</span></label
+                >
+                <input type="text" id="ntfy-server" placeholder="https://ntfy.sh" />
+              </div>
+              <div class="form-group">
+                <label for="ntfy-threshold">Envoyer pour</label>
+                <select id="ntfy-threshold">
+                  <option value="red">Alertes rouges uniquement — vraies affaires</option>
+                  <option value="all">Toutes les alertes</option>
+                </select>
+              </div>
+            </div>
+            <div class="settings-actions">
+              <button class="btn btn--primary" id="btn-save-ntfy">Enregistrer</button>
+              <button class="btn btn--ghost" id="btn-test-ntfy">📲 Tester</button>
+            </div>
+          </div>
+
+          <div class="settings-divider"></div>
+
+          <!-- Email reports -->
+          <div class="settings-block">
+            <h2 class="settings-block__title">Rapports email</h2>
+            <p class="settings-block__desc">Résumé HTML quotidien des meilleures affaires.</p>
+            <div class="settings-grid">
+              <div class="form-group">
+                <label for="email-report-addr">Adresse email</label>
+                <input type="email" id="email-report-addr" placeholder="moi@exemple.com" />
+              </div>
+              <div class="form-group">
+                <label for="email-report-hour">Heure d'envoi</label>
+                <input type="number" id="email-report-hour" min="0" max="23" value="8" />
+              </div>
+              <div class="form-group">
+                <label for="email-report-mode">Méthode d'envoi</label>
+                <select id="email-report-mode">
+                  <option value="mailto">mailto: (client mail)</option>
+                  <option value="emailjs">EmailJS (direct)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="email-report-enabled" />
+                  <span>Activer les rapports quotidiens</span>
+                </label>
+              </div>
+            </div>
+            <div id="emailjs-config" class="hidden settings-subsection">
+              <h3 class="subsection-title">Configuration EmailJS</h3>
+              <div class="settings-grid">
+                <div class="form-group">
+                  <label for="emailjs-service">Service ID</label><input type="text" id="emailjs-service" />
+                </div>
+                <div class="form-group">
+                  <label for="emailjs-template">Template ID</label><input type="text" id="emailjs-template" />
+                </div>
+                <div class="form-group">
+                  <label for="emailjs-user">Public Key</label><input type="text" id="emailjs-user" />
+                </div>
+              </div>
+            </div>
+            <button class="btn btn--ghost" id="btn-send-report-now">Envoyer rapport maintenant</button>
+          </div>
+
+          <div class="settings-divider"></div>
+          <div class="settings-divider"></div>
+
+          <div class="settings-block">
+            <h2 class="settings-block__title">Gestion des données</h2>
+            <p class="settings-block__desc" id="storage-info">Calcul en cours…</p>
+            <div class="data-actions">
+              <button class="btn btn--ghost" id="btn-export">Exporter (JSON)</button>
+              <label class="btn btn--ghost btn--file">
+                Importer des données
+                <input type="file" id="btn-import" accept=".json" hidden />
+              </label>
+            </div>
+            <div class="settings-actions">
+              <button class="btn btn--danger" id="btn-reset">Réinitialiser toutes les données</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Tab: Full Auto (BETA) ── -->
+        <section class="tab-panel hidden" id="tab-fullauto">
+          <div class="panel-header">
+            <div class="panel-header__left">
+              <h1>Full Auto <span class="beta-badge beta-badge--lg">BETA</span></h1>
+              <p class="panel-desc">
+                ⚠️ Fonctionnalité expérimentale. L'extension peut acheter automatiquement sans confirmation. Vérifiez
+                les gardes-fous avant d'activer.
+              </p>
+            </div>
+          </div>
+
+          <div class="settings-block settings-block--danger">
+            <div class="settings-block__head">
+              <div>
+                <h2 class="settings-block__title">🚨 Kill-switch global</h2>
+                <p class="settings-block__desc">
+                  Coupe <strong>immédiatement</strong> tous les achats automatiques. Activez en cas d'urgence ou avant
+                  de fermer Chrome.
+                </p>
+              </div>
+              <label class="toggle-label" title="Activer/désactiver le Full Auto">
+                <input type="checkbox" id="toggle-full-auto" />
+                <span class="toggle-slider toggle-slider--red"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-divider"></div>
+
+          <div class="settings-block">
+            <h2 class="settings-block__title">Garde-fous actifs</h2>
+            <p class="settings-block__desc">Ces limites s'appliquent à <em>tous</em> les modes Full Auto.</p>
+            <div class="safeguards-list">
+              <div class="safeguard-item">
+                <span class="safeguard-icon">✅</span>
+                <div><strong>Kill-switch manuel</strong> — désactivez le toggle ci-dessus à tout moment</div>
+              </div>
+              <div class="safeguard-item">
+                <span class="safeguard-icon">✅</span>
+                <div><strong>Budget max par recherche</strong> — configuré dans chaque watchlist</div>
+              </div>
+              <div class="safeguard-item">
+                <span class="safeguard-icon">✅</span>
+                <div><strong>Plafond journalier</strong> — 3× budget max (réinitialisé à minuit)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-divider"></div>
+
+          <!-- Contact info for full-auto -->
+          <div class="settings-block">
+            <h2 class="settings-block__title">Infos contact</h2>
+            <p class="settings-block__desc">
+              Utilisées pour remplir automatiquement les formulaires d'achat. Stockées localement, jamais exportées.
+            </p>
+            <div class="settings-grid">
+              <div class="form-group">
+                <label for="contact-name-fa">Nom complet</label><input type="text" id="contact-name-fa" />
+              </div>
+              <div class="form-group">
+                <label for="contact-phone-fa">Téléphone</label><input type="tel" id="contact-phone-fa" />
+              </div>
+              <div class="form-group form-group--full">
+                <label for="contact-address-fa">Adresse</label><input type="text" id="contact-address-fa" />
+              </div>
+              <div class="form-group">
+                <label for="contact-city-fa">Ville</label><input type="text" id="contact-city-fa" />
+              </div>
+              <div class="form-group">
+                <label for="contact-zip-fa">Code postal</label><input type="text" id="contact-zip-fa" maxlength="5" />
+              </div>
+            </div>
+            <button class="btn btn--ghost" id="btn-save-contact-fa">Enregistrer les infos contact</button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Confirm modal -->
+    <div class="modal-overlay hidden" id="confirm-modal">
+      <div class="modal">
+        <p id="confirm-text">Êtes-vous sûr ?</p>
+        <div class="modal-actions">
+          <button class="btn btn--ghost" id="confirm-cancel">Annuler</button>
+          <button class="btn btn--danger" id="confirm-ok">Confirmer</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="options.js" type="module"></script>
+  </body>
+</html>

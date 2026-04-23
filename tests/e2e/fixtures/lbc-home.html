@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>LbC — fixture</title>
+  </head>
+
+  <body>
+    <div id="root">
+      <h1>LBC Fixture Home</h1>
+    </div>
+    <!--
+    Real LBC injects __NEXT_DATA__ as a script tag on every SSR page.
+    session-capture.js's Strategy 1 (tryNextData) parses this JSON and
+    extracts `apiKey`. A fresh api_key here proves the full capture →
+    SESSION_CAPTURED → SW → chrome.storage pipeline end-to-end.
+  -->
+    <script id="__NEXT_DATA__" type="application/json">
+      {
+        "props": {
+          "pageProps": {
+            "apiKey": "e2e-fixture-api-key-0123456789abcdef0123456789abcdef"
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

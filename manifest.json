@@ -1,0 +1,70 @@
+{
+  "manifest_version": 3,
+  "name": "LbC Hunter",
+  "version": "1.0.0",
+  "description": "Deal sniping, price intelligence, and purchase automation for LbC resellers.",
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "32": "assets/icons/icon32.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_icon": "assets/icons/icon48.png",
+    "default_title": "LbC Hunter"
+  },
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.lbc.fr/*"],
+      "js": ["content/page-interceptor.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["*://www.lbc.fr/*"],
+      "js": ["content/session-capture.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["*://www.lbc.fr/recherche*"],
+      "js": ["content/inject-badges.js"],
+      "run_at": "document_idle",
+      "css": []
+    },
+    {
+      "matches": ["*://www.lbc.fr/annonce/*", "*://www.lbc.fr/ad/collection/*"],
+      "js": ["content/inject-adpage.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["*://www.lbc.fr/*"],
+      "js": ["content/inject-sidebar.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": ["alarms", "notifications", "storage", "tabs", "scripting", "activeTab", "offscreen"],
+  "host_permissions": [
+    "https://www.lbc.fr/*",
+    "https://api.lbc.fr/*",
+    "https://ntfy.sh/*",
+    "https://api.emailjs.com/*"
+  ],
+  "options_ui": {
+    "page": "src/options/options.html",
+    "open_in_tab": true
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; style-src 'self'; font-src 'self'; object-src 'self'"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/sounds/*.mp3", "src/dashboard/dashboard.html", "offscreen/offscreen.html"],
+      "matches": ["*://www.lbc.fr/*", "chrome-extension://*/*"]
+    }
+  ]
+}
