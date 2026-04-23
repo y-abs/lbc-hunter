@@ -85,7 +85,7 @@ describe("auto_open_tab", () => {
 
     // At least one call with a LBC ad URL (matcher may produce orange/red).
     const adTabCreate = tabCreateSpy.mock.calls.find(
-      (c) => typeof c[0]?.url === "string" && /lbc\.fr\/ad\//.test(c[0].url),
+      (c) => typeof c[0]?.url === "string" && /leboncoin\.fr\/ad\//.test(c[0].url),
     );
     expect(adTabCreate).toBeTruthy();
   });
@@ -105,7 +105,7 @@ describe("auto_open_tab", () => {
     await mods["@/core/poller.js"].pollWatchlist(wl);
 
     // Never opened an ad/ URL
-    expect(tabCreateSpy.mock.calls.every((c) => !/lbc\.fr\/ad\//.test(c[0]?.url || ""))).toBe(true);
+    expect(tabCreateSpy.mock.calls.every((c) => !/leboncoin\.fr\/ad\//.test(c[0]?.url || ""))).toBe(true);
   });
 
   it("does NOT open ad tab during a backfill run (first-poll silent seed)", async () => {
@@ -129,7 +129,7 @@ describe("auto_open_tab", () => {
     });
     await mods["@/core/poller.js"].pollWatchlist(wl);
 
-    expect(tabCreateSpy.mock.calls.every((c) => !/lbc\.fr\/ad\//.test(c[0]?.url || ""))).toBe(true);
+    expect(tabCreateSpy.mock.calls.every((c) => !/leboncoin\.fr\/ad\//.test(c[0]?.url || ""))).toBe(true);
   });
 });
 

@@ -128,7 +128,7 @@ describe("autoRefreshSession", () => {
     fireAlarm("session-refresh");
     await flush();
     // Neither a background tab nor a REFRESH_SESSION message should be sent
-    expect(createSpy.mock.calls.filter((c) => /lbc/.test(c[0]?.url))).toHaveLength(0);
+    expect(createSpy.mock.calls.filter((c) => /leboncoin\.fr/.test(c[0]?.url))).toHaveLength(0);
     expect(msgSpy).not.toHaveBeenCalled();
   });
 
@@ -167,7 +167,7 @@ describe("autoRefreshSession", () => {
     const createSpy = vi.spyOn(chrome.tabs, "create");
     fireAlarm("session-refresh");
     await flush();
-    const bgTabCall = createSpy.mock.calls.find((c) => /lbc\.fr/.test(c[0]?.url) && c[0]?.active === false);
+    const bgTabCall = createSpy.mock.calls.find((c) => /leboncoin\.fr/.test(c[0]?.url) && c[0]?.active === false);
     expect(bgTabCall, "background LBC tab should have been created for session refresh").toBeTruthy();
   });
 
@@ -204,7 +204,7 @@ describe("autoRefreshSession", () => {
     const createSpy = vi.spyOn(chrome.tabs, "create");
     fireAlarm("session-refresh");
     await flush();
-    const lbcCreates = createSpy.mock.calls.filter((c) => /lbc\.fr/.test(c[0]?.url) && c[0]?.active === false);
+    const lbcCreates = createSpy.mock.calls.filter((c) => /leboncoin\.fr/.test(c[0]?.url) && c[0]?.active === false);
     expect(lbcCreates).toHaveLength(0);
   });
 });
@@ -251,7 +251,7 @@ describe("checkSessionHealth", () => {
     await flush();
     expect(querySpy).toHaveBeenCalled();
     expect(msgSpy.mock.calls.length > 0).toBe(true);
-    expect(createSpy.mock.calls.some((c) => /lbc\.fr/.test(c[0]?.url))).toBe(false);
+    expect(createSpy.mock.calls.some((c) => /leboncoin\.fr/.test(c[0]?.url))).toBe(false);
   });
 });
 

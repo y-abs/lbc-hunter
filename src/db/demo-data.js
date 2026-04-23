@@ -83,7 +83,9 @@ export const DEMO_ALERTS = [
     location: { city: "Paris 11e", zipcode: "75011", lat: 48.858, lng: 2.378 },
     seller_type: "private",
     url: "https://www.leboncoin.fr/ad/telephones/123456789",
-    images: ["https://img.leboncoin.fr/api/v1/lbcpb1/images/a1/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0.jpg?rule=ad-large"],
+    images: [
+      "https://img.leboncoin.fr/api/v1/lbcpb1/images/a1/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0.jpg?rule=ad-large",
+    ],
     is_alerted: true,
     is_shipping_enabled: false,
     shipping_cost: null,
