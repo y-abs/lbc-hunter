@@ -160,7 +160,7 @@ export function lbcAdUrl(candidate, listId) {
   if (typeof candidate === "string") {
     try {
       const u = new URL(candidate, "https://www.leboncoin.fr/");
-      if (u.protocol === "https:" && /(^|\.)lbc\.fr$/i.test(u.hostname)) {
+      if (u.protocol === "https:" && /(^|\.)lbc\.fr$/i.test(u.hostname) || u.protocol === "https:" && /(^|\.)leboncoin\.fr$/i.test(u.hostname)) {
         return u.href;
       }
     } catch (_) {
