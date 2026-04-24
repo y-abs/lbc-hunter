@@ -8,6 +8,8 @@
 
 Extension Chrome pour les acheteurs-revendeurs sérieux : polling en temps réel, scoring des prix par rapport au marché, alertes instantanées, et automatisation des actions répétitives — le tout sans quitter votre navigateur.
 
+![Popup LbC Hunter](screenshots/popup.png)
+
 ---
 
 ## Table des matières
@@ -40,44 +42,52 @@ Sans outil, dénicher une bonne affaire sur Leboncoin, c'est : ouvrir quinze ong
 ## Fonctionnalités
 
 ### 🔄 Polling continu et fiable
+
 - Cycle automatique configurable de **30 secondes à 15 minutes** par watchlist
 - Service worker MV3 : tourne en arrière-plan même quand le popup est fermé
 - Première passe silencieuse : pas d'alerte au démarrage, juste une baseline
 
 ### 📊 Scoring marché intelligent
+
 - Médiane des prix calculée sur les annonces actives (percentile 5/95 — sans outliers ni listings aberrants)
 - Minimum **5 annonces** pour avoir une baseline fiable avant de déclencher des alertes
 - Calcul précis du **% d'écart par rapport au marché** pour chaque annonce
 
 ### 🔔 Alertes en deux niveaux
 
-| Niveau | Quand ? |
-|--------|---------|
-| 🔴 **Rouge** | Le prix est X% sous la médiane du marché (seuil configurable, 15% par défaut) |
+| Niveau        | Quand ?                                                                          |
+| ------------- | -------------------------------------------------------------------------------- |
+| 🔴 **Rouge**  | Le prix est X% sous la médiane du marché (seuil configurable, 15% par défaut)    |
 | 🟠 **Orange** | L'annonce correspond à vos critères mais reste dans les prix habituels du marché |
 
 ### 🔙 Backfill initial automatique
+
 Quand vous créez une watchlist, LbC Hunter charge automatiquement l'historique récent (5 à 40 pages × 35 annonces) pour construire des stats solides dès le départ — sans déclencher la moindre alerte.
 
 ### 🤖 Auto-message et achat Lite
+
 - Envoi automatique d'un message personnalisé dès qu'une alerte rouge se déclenche
 - Plafonds configurables : **15 messages/heure** et **50 messages/jour** (modifiables dans les Options)
 - Mode achat Lite : initier un achat directement depuis la notification Chrome
 
 ### 📲 Notifications push sur mobile
+
 - Intégration optionnelle avec [ntfy.sh](https://ntfy.sh) ou votre propre serveur ntfy auto-hébergé
 - Recevez les alertes sur votre téléphone en temps réel
 - Seuil configurable (rouge uniquement, ou rouge + orange)
 
 ### 📋 Tableau de bord complet
+
 - Vue de toutes les annonces détectées, watchlist par watchlist
 - Stats de marché (médiane, taille de l'échantillon)
 - Suivi P&L (profits et pertes) sur vos achats
 
 ### 📧 Rapports par email
+
 - Génération de rapports d'activité envoyables via `mailto:` ou [EmailJS](https://www.emailjs.com)
 
 ### 🛡️ Confidentialité totale
+
 - Toutes vos données restent **sur votre machine** (IndexedDB + storage Chrome)
 - Aucune donnée transmise à un serveur tiers, sauf ntfy et EmailJS si vous les activez explicitement
 - La session Leboncoin est capturée localement et n'est jamais transmise à l'extérieur
@@ -127,24 +137,28 @@ L'icône LbC Hunter apparaît dans la barre d'outils — vous êtes prêt !
 
 > **Astuce :** Laissez un onglet Leboncoin ouvert en arrière-plan. Le service worker l'utilise comme proxy pour ses appels API — sans lui, le polling ne peut pas démarrer.
 
+![Sidebar LbC Hunter sur Leboncoin](screenshots/sidebar.png)
+
 ---
 
 ## Paramètres d'une watchlist
 
-| Paramètre | Description | Valeur par défaut |
-|-----------|-------------|:-----------------:|
-| Nom | Identifiant libre de la watchlist | — |
-| Mots-clés | Termes de recherche | — |
-| Catégorie | Parmi 40+ catégories (Véhicules, Immo, Informatique…) | Toutes |
-| Prix min / max | Filtre de prix strict (annonces hors fourchette ignorées) | — |
-| Type de vendeur | Particulier / Professionnel / Tous | Tous |
-| Code postal + rayon | Zone géographique (filtre par distance en km) | — |
-| Intervalle de polling | 30s / 1 min / 2 min / 5 min / 15 min | 5 min |
-| Seuil alerte rouge | % sous la médiane du marché pour déclencher le rouge | 15 % |
-| Livraison | Inclure / Exclure les annonces avec envoi | Tous |
-| Mode achat | Désactivé ou Lite (achat depuis notification) | Désactivé |
-| Budget max | Montant maximum pour le mode achat Lite | — |
-| Données marché requises | Ne pas alerter tant que la baseline n'est pas établie | Oui |
+| Paramètre               | Description                                               | Valeur par défaut |
+| ----------------------- | --------------------------------------------------------- | :---------------: |
+| Nom                     | Identifiant libre de la watchlist                         |         —         |
+| Mots-clés               | Termes de recherche                                       |         —         |
+| Catégorie               | Parmi 40+ catégories (Véhicules, Immo, Informatique…)     |      Toutes       |
+| Prix min / max          | Filtre de prix strict (annonces hors fourchette ignorées) |         —         |
+| Type de vendeur         | Particulier / Professionnel / Tous                        |       Tous        |
+| Code postal + rayon     | Zone géographique (filtre par distance en km)             |         —         |
+| Intervalle de polling   | 30s / 1 min / 2 min / 5 min / 15 min                      |       5 min       |
+| Seuil alerte rouge      | % sous la médiane du marché pour déclencher le rouge      |       15 %        |
+| Livraison               | Inclure / Exclure les annonces avec envoi                 |       Tous        |
+| Mode achat              | Désactivé ou Lite (achat depuis notification)             |     Désactivé     |
+| Budget max              | Montant maximum pour le mode achat Lite                   |         —         |
+| Données marché requises | Ne pas alerter tant que la baseline n'est pas établie     |        Oui        |
+
+![Recherches surveillées](screenshots/recherches.png)
 
 ---
 
@@ -160,10 +174,15 @@ LbC Hunter calcule pour chaque annonce son **écart par rapport à la médiane d
 - Sinon → alerte 🟠 **orange** avec son discret
 
 **Conditions pour que la médiane soit fiable :**
+
 - Au moins **5 annonces** avec un prix valide dans la watchlist
 - Calcul sur le percentile 5/95 (les prix aberrants sont ignorés)
 
 **Premier cycle toujours silencieux :** quand vous créez une watchlist, le premier scan stocke les annonces sans déclencher d'alerte. C'est la baseline — les alertes commencent au cycle suivant.
+
+| ![Alertes rouge et orange](screenshots/alertes.png) | ![Distribution des prix du marché](screenshots/marche.png) |
+| :-------------------------------------------------: | :--------------------------------------------------------: |
+|              _Alertes rouge et orange_              |             _Distribution des prix du marché_              |
 
 ---
 
@@ -178,6 +197,8 @@ LbC Hunter calcule pour chaque annonce son **écart par rapport à la médiane d
 
 Les alertes arrivent sur votre mobile en quelques secondes.
 
+![Notifications ntfy sur mobile](screenshots/ntfy-messages.jpg)
+
 ### EmailJS (pour les rapports)
 
 LbC Hunter peut envoyer des rapports d'activité par email via [EmailJS](https://www.emailjs.com). Renseignez votre **Service ID**, **Template ID** et **Public Key** dans les Options.
@@ -189,20 +210,28 @@ LbC Hunter peut envoyer des rapports d'activité par email via [EmailJS](https:/
 Quand une alerte rouge se déclenche, LbC Hunter peut envoyer automatiquement un message au vendeur en utilisant un template que vous définissez dans les Options.
 
 **Limites anti-spam :**
+
 - Maximum **15 messages par heure**
 - Maximum **50 messages par jour**
 - Ces plafonds sont configurables dans les Options
 
 **Mode achat Lite :** permet d'initier un achat directement depuis la notification Chrome, sans ouvrir manuellement la page de l'annonce.
 
+![Templates de messages automatiques](screenshots/message-templates.png)
+
 ---
 
 ## Tableau de bord et rapports 📊
 
 Le tableau de bord (accessible depuis le popup) affiche :
+
 - Toutes les annonces détectées, triées par watchlist
 - Les stats de marché de chaque watchlist (médiane, nombre d'annonces échantillonnées)
 - Le suivi de vos achats avec P&L (prix d'achat vs prix de revente estimé)
+
+| ![Annonces détectées et scoring](screenshots/annonces.png) | ![Statistiques d'activité](screenshots/statistiques.png) |
+| :--------------------------------------------------------: | :------------------------------------------------------: |
+|              _Annonces détectées et scoring_               |                _Statistiques d'activité_                 |
 
 ---
 
@@ -262,15 +291,15 @@ npm run lint:sh        # lint des scripts shell (shellcheck)
 
 ## Dépannage 🔧
 
-| Symptôme | Cause probable | Solution |
-|----------|---------------|---------|
-| "Session expirée" | Inactivité sur Leboncoin (TTL 6h) | Reconnectez-vous sur leboncoin.fr, puis forcez un poll depuis le popup |
-| Aucun onglet détecté | Pas d'onglet Leboncoin ouvert | Ouvrez un onglet leboncoin.fr et attendez le prochain cycle |
-| Pas d'alerte malgré des annonces | Baseline pas encore établie | Attendez quelques cycles — il faut ≥ 5 annonces pour calculer la médiane |
-| Alerte rouge jamais déclenchée | Seuil trop élevé ou marché sans outlier | Vérifiez le seuil dans les paramètres de la watchlist (défaut 15 %) |
-| Pas de notification push ntfy | Mauvaise config ou app mobile inactive | Vérifiez le topic, le seuil minimum et que l'app ntfy est abonnée |
-| Auto-message bloqué | Plafond horaire ou journalier atteint | Attendez la prochaine heure/journée, ou ajustez les limites dans les Options |
-| L'extension ne se charge pas | Build manquant ou incomplet | Relancez `npm run build` et rechargez l'extension dans `chrome://extensions` |
+| Symptôme                         | Cause probable                          | Solution                                                                     |
+| -------------------------------- | --------------------------------------- | ---------------------------------------------------------------------------- |
+| "Session expirée"                | Inactivité sur Leboncoin (TTL 6h)       | Reconnectez-vous sur leboncoin.fr, puis forcez un poll depuis le popup       |
+| Aucun onglet détecté             | Pas d'onglet Leboncoin ouvert           | Ouvrez un onglet leboncoin.fr et attendez le prochain cycle                  |
+| Pas d'alerte malgré des annonces | Baseline pas encore établie             | Attendez quelques cycles — il faut ≥ 5 annonces pour calculer la médiane     |
+| Alerte rouge jamais déclenchée   | Seuil trop élevé ou marché sans outlier | Vérifiez le seuil dans les paramètres de la watchlist (défaut 15 %)          |
+| Pas de notification push ntfy    | Mauvaise config ou app mobile inactive  | Vérifiez le topic, le seuil minimum et que l'app ntfy est abonnée            |
+| Auto-message bloqué              | Plafond horaire ou journalier atteint   | Attendez la prochaine heure/journée, ou ajustez les limites dans les Options |
+| L'extension ne se charge pas     | Build manquant ou incomplet             | Relancez `npm run build` et rechargez l'extension dans `chrome://extensions` |
 
 ---
 
